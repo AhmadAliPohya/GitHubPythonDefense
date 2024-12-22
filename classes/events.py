@@ -47,9 +47,10 @@ class TurnaroundEvent:
 
 
 class MaintenanceEvent:
-    def __init__(self, Engines, location, t_beg, t_dur, workscope):
+    def __init__(self, location, t_beg, t_dur, workscope):
         self.location = location
         self.t_beg = t_beg
         self.t_dur = t_dur
         self.t_end = t_beg + t_dur
         self.type = 'Maintenance'
+        self.workscope = workscope

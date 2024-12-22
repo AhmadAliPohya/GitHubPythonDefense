@@ -141,6 +141,8 @@ def main():
     # Read configuration
     config = read_config('config.ini')
 
+    mro_base = config.get('Other', 'mro_base')
+
     # Create aircraft fleet
     num_aircraft = config.getint('Aircraft', 'num_aircraft')
     aircraft_fleet = create_aircraft_fleet(num_aircraft, config)
@@ -148,108 +150,129 @@ def main():
     # Create and attach engine sets to aircraft
     create_and_attach_engines(num_aircraft, aircraft_fleet, config)
 
-    # Create spare engines
-    #spare_engine_ratio = config.getfloat('Engine', 'spare_engine_ratio')
-    #spare_engine_fleet = create_spare_engines(num_aircraft, spare_engine_ratio, config)
-
-    # Create list of engines that are in shop and are spare (ordering while you need it)
-    shop_engine_fleet = []
-    spare_engine_fleet = []
+    # Initialize engine tracking fleets
+    shop_engine_fleet = []  # Engines currently in the shop
+    spare_engine_fleet = []  # Spare engines available for replacement
 
     # Perform initial tail assignment
     aircraft_fleet = tap.initial(aircraft_fleet, config)
 
-    # Placeholder for additional logic
     print("Initialization complete. Ready to start operations.")
 
+    # Set up global clock and simulation end time
     globalClock_str = config.get('Simulation', 'initial_time')
     globalClock = dt.datetime.strptime(globalClock_str, '%Y-%m-%d %H:%M:%S')
     sim_duration = config.getint('Simulation', 'sim_duration')
-    end_time = globalClock + dt.timedelta(days=365*sim_duration)
+    end_time = globalClock + dt.timedelta(days=365 * sim_duration)
 
-    # Track the last time we scheduled
+    # Track the last time scheduling was performed
     last_scheduled_date = None
 
     while True:
+        # Find the next aircraft to process
         idx_aircraft = find_next_aircraft(aircraft_fleet)
         aircraft = aircraft_fleet[idx_aircraft]
 
-        # Maintenance due?
-        aircraft.Engines.maintenance_due()
-        if aircraft.Engines.egtm_due or aircraft.Engines.llp_due:
-            maintenance_event = MaintenanceEvent(
-                Engines=aircraft.Engines,
-                location=aircraft.location,
-                t_beg=aircraft.last_tstamp,
-                t_dur=dt.timedelta(hours=6),
-                workscope='EngineExchange',
-            )
+        # Check for engine maintenance needs
+        if aircraft.Engines.maintenance_due():
 
-            # Restore the SOH of the engines
-            aircraft.Engines.restore(globalClock)
+            skip_maintenance = False
 
-            # Put this engine into the shop
-            shop_engine_fleet.append(aircraft.Engines)
+            if aircraft.location != mro_base:
 
-            # Get an engine from the spare fleet (which may be empty, resulting
-            # in the creation of new engines)
-            try:
-                spare_engine = spare_engine_fleet.pop(0)
-            except IndexError:
-                num_needed_spares += 1
-                print("Need %d spare engines" % num_needed_spares)
-                spare_engine = Engines(uid=1000+num_needed_spares, config=config)
+                # here it matters what the ESV driver is.
+                # If a random failure occurred, the engine is not operable.
+                # This means that the airline either has to try to send another
+                # aircraft or distribute passengers and whatnot - or - we just
+                # cancel this flight. Either way, the aircraft/engine will stay
+                # "grounded" for 24 hours. Think of this as the waiting time until
+                # the spare engines come in by freighter.
 
-            aircraft.Engines = spare_engine
-            aircraft.add_event(maintenance_event)
+                if aircraft.Engines.random_due:
 
+                    downtime_event = MaintenanceEvent(
+                        location=aircraft.location,
+                        t_beg=aircraft.last_tstamp,
+                        t_dur=dt.timedelta(hours=24),
+                        workscope='AircraftOnGround',
+                    )
 
-            # Move the engine from the active fleet to the shop_list
-            #target_uid = aircraft.Engines.uid
-            #engine_index = next((i for i, obj in enumerate(engine_fleet) if obj.uid == target_uid), None)
-            #shop_engine_fleet.append(engine_fleet.pop(engine_index))
+                    aircraft.add_event(downtime_event)
 
-            # Take a shop engine and put it into the active fleet
-            #spare_engine_fleet = spare_engine_fleet.pop(0)
-            #engine_fleet.append(spare_engine_fleet)
-            #aircraft.Engines = spare_engine_fleet
-            #aircraft.add_event(maintenance_event)
+                else:
 
-        # Turnaround Event
+                    # Here, we just schedule the maintenance to the next time
+                    # when the aircraft is at its MRO base. Because the MRO
+                    # base is the most likely the most frequent travelled
+                    # airport, it'll be visited within the timeframe anyways
+                    # without our need for intervention
+
+                    skip_maintenance = True
+
+            if not skip_maintenance:
+
+                # Add a maintenance event
+                maintenance_event = MaintenanceEvent(
+                    location=aircraft.location,
+                    t_beg=aircraft.last_tstamp,
+                    t_dur=dt.timedelta(hours=6),  # Line maintenance duration
+                    workscope='EngineExchange',
+                )
+
+                # Perform the maintenance via the Engines class
+                aircraft.Engines.restore(globalClock)
+
+                # Move the engine to the shop
+                shop_engine_fleet.append(aircraft.Engines)
+
+                # Replace the engine with a spare, creating a new one if necessary
+                try:
+                    spare_engine = spare_engine_fleet.pop(0)
+                except IndexError:
+                    num_needed_spares += 1
+                    print(f"Need {num_needed_spares} spare engines.")
+                    spare_engine = Engines(uid=1000 + num_needed_spares, config=config)
+
+                aircraft.Engines = spare_engine
+                aircraft.add_event(maintenance_event)
+
+        # Simulate a Turnaround Event
         tat_hrs = np.random.uniform(low=aircraft.avg_tat_hrs_min, high=aircraft.avg_tat_hrs_max)
         tat = TurnaroundEvent(
             location=aircraft.location,
             t_beg=aircraft.last_tstamp,
-            t_dur=dt.timedelta(hours=tat_hrs))
+            t_dur=dt.timedelta(hours=tat_hrs)
+        )
         aircraft.event_calendar.append(tat)
         aircraft.last_tstamp = tat.t_end
 
-        # Flight Event
+        # Simulate a Flight Event
         flight_params = aircraft.next_flights.pop(0)
         flight_params['t_beg'] = aircraft.last_tstamp
         flightevent = FlightEvent(**flight_params)
         aircraft.add_event(flightevent)
 
-        # Update globalClock
+        # Update global clock
         globalClock = aircraft.last_tstamp
 
-        # Check if at least one full week (7 days) has passed since the last scheduling call
+        # Reschedule if a week has passed
         if last_scheduled_date is None or (globalClock - last_scheduled_date) >= dt.timedelta(days=7):
             aircraft_fleet = tap.reschedule(aircraft_fleet)
             last_scheduled_date = globalClock
 
-            # Also, once a week check if we can put back some engines
+            # Check if engines in the shop are ready to be returned
             for idx, engine in enumerate(shop_engine_fleet):
                 if globalClock > engine.esv_until:
                     spare_engine_fleet.append(engine)
                     del shop_engine_fleet[idx]
 
-
+        # End simulation if the time limit is reached
         if globalClock > end_time:
             print("Simulation Done")
             break
 
     return aircraft_fleet, spare_engine_fleet, shop_engine_fleet
+
 
 
 def postprocessingTAP(aircraft_fleet):
@@ -349,6 +372,7 @@ def postprocessingTAP(aircraft_fleet):
     print("Showing Figure")
     fig.show(renderer="browser")
 
+
 def postprocessingSOH(all_fleets):
 
     active_engines = [Aircraft.Engines for Aircraft in all_fleets[0]]
@@ -371,12 +395,6 @@ def postprocessingSOH(all_fleets):
     for engine in engine_fleet:
 
         print(engine)
-        # Assuming each engine has a 'history' attribute structured like:
-        # engine.history = {
-        #    'EGTM': [...],
-        #    'LLP': [...],
-        #    'TIME': [timedelta(...), timedelta(...), ...]
-        # }
         history = engine.history
 
         # Convert the TIME (timedelta) to actual datetimes
@@ -420,5 +438,5 @@ def postprocessingSOH(all_fleets):
 
 if __name__ == "__main__":
     fleets = main()
-    # postprocessing(fleet)
+    #postprocessingTAP(fleets[0])
     postprocessingSOH(fleets)
