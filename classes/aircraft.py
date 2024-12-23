@@ -43,16 +43,7 @@ class Aircraft:
     """
 
     def __init__(self, uid, config):
-        """
-        Initialize the Aircraft instance with UID, config, and default state.
 
-        Parameters
-        ----------
-        uid : int
-            Unique identifier for the aircraft.
-        config : configparser.ConfigParser
-            Configuration parser with settings used to generate aircraft stats.
-        """
         # Store basic attributes
         self.uid = uid
         self.config = config
@@ -493,14 +484,14 @@ class Engines:
         else:
             return False
 
-    def restore(self, globalClock):
+    def restore(self, SimTime):
         """
         Perform restorations based on current engine condition.
 
         Parameters
         ----------
-        globalClock : datetime.datetime
-            The current simulation time at which the restoration occurs.
+        SimTime : datetime.datetime
+            The current simulation time.
 
         Notes
         -----
@@ -511,46 +502,46 @@ class Engines:
         """
         # Print a maintenance log message
         print("\nESV for Engine %d on %s at %d EFCs"
-              % (self.uid, globalClock.strftime("%d.%m.%Y %H:%M"), self.fc_counter))
+              % (self.uid, SimTime.strftime("%d.%m.%Y %H:%M"), self.fc_counter))
 
         # Handle random failure repairs first
         if self.random_due:
-            self.random_restoration(globalClock)
+            self.random_restoration(SimTime)
             # If EGTM was at warning level, also restore EGTM
             if self.warning_egtm_due:
-                self.egtm_restoration(globalClock)
+                self.egtm_restoration(SimTime)
             # If LLP was at warning level, also restore LLP
             if self.warning_llp_due:
-                self.llp_restoration(globalClock)
+                self.llp_restoration(SimTime)
 
         # Handle critical EGTM restoration
         if self.critical_egtm_due:
-            self.egtm_restoration(globalClock)
+            self.egtm_restoration(SimTime)
             # Also handle warning-level LLP if present
             if self.warning_llp_due:
-                self.llp_restoration(globalClock)
+                self.llp_restoration(SimTime)
 
         # Handle critical LLP restoration
         if self.critical_llp_due:
-            self.llp_restoration(globalClock)
+            self.llp_restoration(SimTime)
             # Also handle warning-level EGTM if present
             if self.warning_egtm_due:
-                self.egtm_restoration(globalClock)
+                self.egtm_restoration(SimTime)
 
         # Record the updated engine state after restoration
         self.history['EGTM'].append(self.egtm)
         self.history['LLP'].append(self.llp_life)
         self.history['SOH'].append(self.random_soh)
-        self.history['TIME'].append(globalClock)
+        self.history['TIME'].append(SimTime)
         self.history['EFCs'].append(self.fc_counter)
 
-    def egtm_restoration(self, globalClock):
+    def egtm_restoration(self, SimTime):
         """
         Restore EGTM to near-initial state and mark engine as unavailable for 25 days.
 
         Parameters
         ----------
-        globalClock : datetime.datetime
+        SimTime : datetime.datetime
             The current simulation time.
         """
         # Store old EGTM for logging
@@ -566,7 +557,7 @@ class Engines:
 
         # Maintenance resets the engine’s due flags
         self.egtm_due = False
-        self.esv_until = globalClock + dt.timedelta(days=25)
+        self.esv_until = SimTime + dt.timedelta(days=25)
         self.critical_egtm_due = False
         self.warning_egtm_due = False
 
@@ -574,13 +565,13 @@ class Engines:
         print("\t - EGTM restoration from %.1f°C to %.1f°C"
               % (old_egtm, new_egtm))
 
-    def llp_restoration(self, globalClock):
+    def llp_restoration(self, SimTime):
         """
         Restore LLP life to the initial value and mark engine as unavailable for 25 days.
 
         Parameters
         ----------
-        globalClock : datetime.datetime
+        SimTime : datetime.datetime
             The current simulation time.
         """
         # Store old LLP life for logging
@@ -596,7 +587,7 @@ class Engines:
 
         # Maintenance resets the engine’s due flags
         self.llp_due = False
-        self.esv_until = globalClock + dt.timedelta(days=25)
+        self.esv_until = SimTime + dt.timedelta(days=25)
         self.critical_llp_due = False
         self.warning_llp_due = False
 
@@ -604,18 +595,18 @@ class Engines:
         print("\t - LLP-RUL restoration from %.1fEFC to %.1fEFC"
               % (old_llp_life, new_llp_life))
 
-    def random_restoration(self, globalClock):
+    def random_restoration(self, SimTime):
         """
         Perform a minimal restoration to address a random failure and mark engine as unavailable for 7 days.
 
         Parameters
         ----------
-        globalClock : datetime.datetime
+        SimTime : datetime.datetime
             The current simulation time.
         """
         # Clear the random failure flag and move the next random failure
         self.random_due = False
-        self.esv_until = globalClock + dt.timedelta(days=7)
+        self.esv_until = SimTime + dt.timedelta(days=7)
         self.random_soh = 1
 
         # Remove the failure count that just triggered the restoration
