@@ -60,6 +60,7 @@ class Aircraft:
         self.Engines = None  # Placeholder for attached engines
         self.location = None  # Current location of the aircraft
         self.last_tstamp = None  # Timestamp of the last recorded event
+        self.aog_events = 0
 
     def _generate_random_age(self):
         """

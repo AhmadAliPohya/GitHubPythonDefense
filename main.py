@@ -43,6 +43,8 @@ class Manager:
         # Create and attach engine sets to aircraft
         self.create_and_attach_engines(num_aircraft, self.aircraft_fleet)
 
+        self.aog_events = 0
+
         # Initiate Simulation Time
         SimTime_str = self.config.get('Simulation', 'initial_time')
         self.SimTime = dt.datetime.strptime(SimTime_str, '%Y-%m-%d %H:%M:%S')
@@ -187,6 +189,8 @@ def main():
                     )
 
                     aircraft.add_event(downtime_event)
+                    aircraft.aog_events += 1
+                    mng.aog_events += 1
 
                 else:
 

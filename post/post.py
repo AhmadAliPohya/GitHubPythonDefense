@@ -163,3 +163,82 @@ def postprocessingSOH(mng):
 
     fig.show(renderer='browser')
 
+
+def minimal_report(mng):
+    """
+    Generate a minimal report summarizing the Manager's state, configuration, 
+    global parameters, and a per-aircraft summary.
+
+    Parameters
+    ----------
+    mng : Manager
+        The Manager object containing the simulation's state and data.
+
+    Returns
+    -------
+    None
+    """
+    report_lines = []
+
+    # First block: Config file content
+    report_lines.append("Configuration Parameters:")
+    for section in mng.config.sections():
+        report_lines.append(f"[{section}]")
+        for key, value in mng.config.items(section):
+            report_lines.append(f"{key}: {value}")
+        report_lines.append("")  # Add a blank line after each section
+
+    # Add a blank line after the configuration block
+    report_lines.append("")
+
+    # Second block: Global parameters
+    num_aircraft = len(mng.aircraft_fleet)
+
+    # Count all shop visits by looking for "EngineExchange" in event calendars
+    total_shop_visits = sum(
+        1 for ac in mng.aircraft_fleet for event in ac.event_calendar
+        if getattr(event, 'workscope', None) == "EngineExchange"
+    )
+
+    # Fleet averages
+    avg_fc_per_year = sum(ac.fc_counter for ac in mng.aircraft_fleet) / num_aircraft
+    avg_fh_per_fc = (
+            sum(ac.fh_counter.total_seconds() / 3600 for ac in mng.aircraft_fleet) /
+            sum(ac.fc_counter for ac in mng.aircraft_fleet)
+    )
+
+    report_lines.append("Global Parameters:")
+    report_lines.append(f"Number of needed spares: {mng.num_needed_spares}")
+    report_lines.append(f"Number of Aircraft on Ground (AOG) events: {mng.aog_events}")
+    report_lines.append(f"Total number of engine shop visits: {total_shop_visits}")
+    report_lines.append(f"Fleet average FC/year: {avg_fc_per_year:.2f}")
+    report_lines.append(f"Fleet average FH/FC: {avg_fh_per_fc:.2f}")
+    report_lines.append("")
+
+    # Third block: Per-aircraft summary
+    report_lines.append("Per-Aircraft Summary:")
+    report_lines.append(f"{'Aircraft ID':<15}{'AOG Events':<15}{'Shop Visits':<15}"
+                        f"{'Avg FC/Year':<15}{'Avg FH/FC':<15}")
+
+    for ac in mng.aircraft_fleet:
+        # Count shop visits for this aircraft
+        shop_visits = sum(
+            1 for event in ac.event_calendar
+            if getattr(event, 'workscope', None) == "EngineExchange"
+        )
+
+        # Calculate per-aircraft averages
+        avg_fc_per_year = ac.fc_counter / (ac.age.total_seconds() / (3600 * 24 * 365))
+        avg_fh_per_fc = ac.fh_counter.total_seconds() / (3600 * ac.fc_counter)
+
+        report_lines.append(f"{ac.uid:<15}{ac.aog_events:<15}{shop_visits:<15}"
+                            f"{avg_fc_per_year:<15.2f}{avg_fh_per_fc:<15.2f}")
+
+    # Output report to console
+    for line in report_lines:
+        print(line)
+
+    # Save report to a .txt file
+    with open("minimal_report.txt", "w") as file:
+        file.write("\n".join(report_lines))
+
