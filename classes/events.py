@@ -1,11 +1,5 @@
-class Event:
-    def __init__(self, event_type, time=None):
-        self.event_type = event_type
-        self.time = time
-
-
 class FlightEvent:
-    def __init__(self, name, orig, dest, dist, t_beg, t_dur):
+    def __init__(self, name, orig, dest, dist, t_beg, t_dur, **kwargs):
 
         self.name = name
         self.orig = orig

@@ -1,0 +1,6 @@
+2024-12-29 12:00:28 [INFO]: Created 15 aircraft
+2024-12-29 12:00:28 [INFO]: Created and attached 15 engine sets
+2024-12-29 12:00:28 [INFO]: Initialization complete. Ready to start operations.
+2024-12-29 12:00:39 [INFO]: ESV for Engine 2 on 26.05.2029 20:55 at 6411 EFCs
+2024-12-29 12:00:39 [INFO]:  - replacement of failed part
+2024-12-29 12:00:39 [INFO]: Need 1 spare engines.

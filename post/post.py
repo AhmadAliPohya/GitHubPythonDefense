@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
 import plotly.express as px
-from classes.tailassignment import od_pairs
+# from classes.tailassignment import od_pairs
 
 def postprocessingTAP(mng):
 

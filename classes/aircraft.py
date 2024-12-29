@@ -1,7 +1,6 @@
-import math
+import logging
 import numpy as np
 from scipy.stats import truncnorm
-from scipy import interpolate
 import datetime as dt
 
 
@@ -61,6 +60,9 @@ class Aircraft:
         self.location = None  # Current location of the aircraft
         self.last_tstamp = None  # Timestamp of the last recorded event
         self.aog_events = 0
+        self.past_flights = []
+        self.util_category = None
+        self.scheduled_until = dt.timedelta(hours=0)
 
     def _generate_random_age(self):
         """
@@ -223,6 +225,12 @@ class Aircraft:
             self.Engines.fc_counter += 1
             self.Engines.fh_counter += event.t_dur
             self.Engines.deteriorate(event)
+            self.past_flights.append(event)
+
+    def add_next_flight(self, next_flight_info):
+
+        self.next_flights.append(next_flight_info)
+        self.scheduled_until += next_flight_info['t_dur']
 
     def __repr__(self):
         """
@@ -502,7 +510,7 @@ class Engines:
           marked unavailable for a shorter period (7 days) compared to other maintenance (25 days).
         """
         # Print a maintenance log message
-        print("\nESV for Engine %d on %s at %d EFCs"
+        logging.info("ESV for Engine %d on %s at %d EFCs"
               % (self.uid, SimTime.strftime("%d.%m.%Y %H:%M"), self.fc_counter))
 
         # Handle random failure repairs first
@@ -563,7 +571,7 @@ class Engines:
         self.warning_egtm_due = False
 
         # Log the restoration action
-        print("\t - EGTM restoration from %.1f°C to %.1f°C"
+        logging.info(" - EGTM restoration from %.1f°C to %.1f°C"
               % (old_egtm, new_egtm))
 
     def llp_restoration(self, SimTime):
@@ -593,7 +601,7 @@ class Engines:
         self.warning_llp_due = False
 
         # Log the restoration action
-        print("\t - LLP-RUL restoration from %.1fEFC to %.1fEFC"
+        logging.info(" - LLP-RUL restoration from %.1fEFC to %.1fEFC"
               % (old_llp_life, new_llp_life))
 
     def random_restoration(self, SimTime):
@@ -614,4 +622,4 @@ class Engines:
         # del self.failure_efcs[0]
 
         # Log the random failure restoration action
-        print("\t - replacement of failed part")
+        logging.info(" - replacement of failed part")

@@ -1,15 +1,26 @@
 # /main.py
 
+import logging
 import configparser as cp
 from classes.aircraft import Aircraft, Engines
 import classes.tailassignment as tap
+import classes.prediction as pred
 from classes.events import FlightEvent, TurnaroundEvent, MaintenanceEvent
 import numpy as np
 import datetime as dt
 from post import post
 
+# Configure logging to write debug and above to a file called log.txt
+logging.basicConfig(
+    filename='log.txt',  # file path
+    filemode='w',  # <--- Overwrite the file each time
+    level=logging.DEBUG,  # minimum severity level to capture
+    format='%(asctime)s [%(levelname)s]: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'  # Only display to the nearest second
+)
 
-class Manager:
+
+class SimulationManager:
     def __init__(self, config_path: str):
         """
         Initializes the Manager class with configuration, aircraft fleet,
@@ -22,28 +33,32 @@ class Manager:
         """
         self.current_time = None
         self.num_needed_spares = 0
-        self.ago_events = 0
+        self.aog_events = 0
         self.event_calendar = None
         self.config = None
         self.mro_base = None
         self.aircraft_fleet = []
         self.shop_engine_fleet = []
         self.spare_engine_fleet = []
+        self.yemo = []
 
         # Read configuration
         self.read_config(config_path)
 
         # Initialize settings
         self.mro_base = self.config.get('Other', 'mro_base')
+        if self.config.get('Simulation','maint_strategy') == 'predictive':
+            self.predictive = True
+        else:
+            self.predictive = False
 
         # Create aircraft fleet
         num_aircraft = self.config.getint('Aircraft', 'num_aircraft')
         self.aircraft_fleet = self.create_aircraft_fleet(num_aircraft)
+        self.no_aircraft = len(self.aircraft_fleet)
 
         # Create and attach engine sets to aircraft
         self.create_and_attach_engines(num_aircraft, self.aircraft_fleet)
-
-        self.aog_events = 0
 
         # Initiate Simulation Time
         SimTime_str = self.config.get('Simulation', 'initial_time')
@@ -52,7 +67,7 @@ class Manager:
         self.EndTime = self.SimTime + dt.timedelta(days=365 * sim_duration)
 
 
-        print("Initialization complete. Ready to start operations.")
+        logging.info("Initialization complete. Ready to start operations.")
 
     def read_config(self, file_path: str):
         """
@@ -83,7 +98,7 @@ class Manager:
             List of created aircraft objects.
         """
         aircraft_fleet = [Aircraft(uid=n, config=self.config) for n in range(num_aircraft)]
-        print("Created %d aircraft" % num_aircraft)
+        logging.info("Created %d aircraft" % num_aircraft)
         return aircraft_fleet
 
     def create_and_attach_engines(self, num_aircraft: int, aircraft_fleet: list) -> list:
@@ -107,7 +122,7 @@ class Manager:
             engines = Engines(uid=n, config=self.config, aircraft=aircraft_fleet[n])
             aircraft_fleet[n].attach_engines(engines)
             engine_fleet.append(engines)
-        print("Created and attached %d engine sets" % len(engine_fleet))
+        logging.info("Created and attached %d engine sets" % len(engine_fleet))
         return engine_fleet
 
     def create_spare_engines(self, num_aircraft: int, spare_engine_ratio: float) -> list:
@@ -130,8 +145,14 @@ class Manager:
         spare_engine_fleet = [
             Engines(uid=num_aircraft + n, config=self.config) for n in range(num_spare_engines)
         ]
-        print("Created %d spare engine sets" % len(spare_engine_fleet))
+        logging.info("Created %d spare engine sets" % len(spare_engine_fleet))
         return spare_engine_fleet
+
+    def prepare_utilization_change(self):
+
+        for idx, aircraft in enumerate(self.aircraft_fleet):
+            if aircraft.uid == 0:
+                aircraft.util_category = 0
 
 
 def find_next_aircraft(aircraft_fleet):
@@ -151,15 +172,16 @@ def main():
     """
     Main function to initialize and run the simulation.
     """
-    mng = Manager(config_path='config.ini')
+    mng = SimulationManager(config_path='config.ini')
 
     # Perform initial tail assignment
     mng = tap.initial(mng)
 
-    # Track the last time scheduling was performed
-    last_scheduled_date = None
+    mng.yemo.append((mng.SimTime.year, mng.SimTime.month))
 
     while True:
+
+
         # Find the next aircraft to process
         idx_aircraft = find_next_aircraft(mng.aircraft_fleet)
         aircraft = mng.aircraft_fleet[idx_aircraft]
@@ -223,7 +245,7 @@ def main():
                     spare_engine = mng.spare_engine_fleet.pop(0)
                 except IndexError:
                     mng.num_needed_spares += 1
-                    print(f"Need {mng.num_needed_spares} spare engines.")
+                    logging.info(f"Need {mng.num_needed_spares} spare engines.")
                     spare_engine = Engines(uid=1000 + mng.num_needed_spares, config=mng.config)
 
                 aircraft.Engines = spare_engine
@@ -248,10 +270,13 @@ def main():
         # Update global clock
         mng.SimTime = aircraft.last_tstamp
 
-        # Reschedule if a week has passed
-        if last_scheduled_date is None or (mng.SimTime - last_scheduled_date) >= dt.timedelta(days=7):
+        yemo = (mng.SimTime.year, mng.SimTime.month)
+        if yemo not in mng.yemo:
+            # it's a new month
+            mng = pred.predict_rul(mng)
+
+            print("rescheduling on %s" % str(mng.SimTime))
             mng = tap.reschedule(mng)
-            last_scheduled_date = mng.SimTime
 
             # Check if engines in the shop are ready to be returned
             for idx, engine in enumerate(mng.shop_engine_fleet):
@@ -259,15 +284,14 @@ def main():
                     mng.spare_engine_fleet.append(engine)
                     del mng.shop_engine_fleet[idx]
 
-        # End simulation if the time limit is reached
-        if mng.SimTime > mng.EndTime:
-            print("Simulation Done")
-            break
+            mng.yemo.append(yemo)
 
-    return mng
+        if mng.SimTime >= mng.EndTime:
+            return mng
 
 
 
 if __name__ == "__main__":
     manager = main()
     post.postprocessingSOH(manager)
+    post.minimal_report(manager)
