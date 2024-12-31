@@ -1,9 +1,10 @@
 Configuration Parameters:
 [Simulation]
 initial_time: 2024-12-05 10:14:00
-sim_duration: 5
+sim_duration: 10
 random_seed: 42
-maint_strategy: 'conventional'
+maint_strategy: predictive
+predict_rul: (2028, 6)
 
 [Aircraft]
 num_aircraft: 15
@@ -13,6 +14,7 @@ avg_fc_per_year: 1050
 std_fc_per_year: 150
 avg_fh_per_fc: 4.75
 std_fh_per_fc: 1.8
+avg_tat_hrs: 3
 
 [Engine]
 spare_engine_ratio: 1.0
@@ -26,26 +28,26 @@ mro_base: EWR
 
 
 Global Parameters:
-Number of needed spares: 1
-Number of Aircraft on Ground (AOG) events: 0
-Total number of engine shop visits: 1
-Fleet average FC/year: 6414.33
-Fleet average FH/FC: 4.79
+Number of needed spares: 5
+Number of Aircraft on Ground (AOG) events: 5
+Total number of engine shop visits: 22
+Fleet average FC/year: 12197.73
+Fleet average FH/FC: 4.18
 
 Per-Aircraft Summary:
 Aircraft ID    AOG Events     Shop Visits    Avg FC/Year    Avg FH/FC      
-0              0              0              1831.08        4.78           
-1              0              0              1841.18        4.76           
-2              0              1              1819.57        4.81           
-3              0              0              1837.27        4.77           
-4              0              0              1822.52        4.81           
-5              0              0              1842.64        4.75           
-6              0              0              1827.96        4.79           
-7              0              0              1836.71        4.77           
-8              0              0              1821.71        4.81           
-9              0              0              1820.04        4.81           
-10             0              0              1830.76        4.78           
-11             0              0              1821.73        4.81           
-12             0              0              1834.05        4.78           
-13             0              0              1841.91        4.76           
-14             0              0              1830.24        4.79           
+0              0              1              2462.02        3.56           
+1              0              1              2321.46        3.77           
+2              0              1              1754.74        4.99           
+3              0              1              1749.11        5.01           
+4              0              1              2398.16        3.65           
+5              0              1              2365.08        3.70           
+6              0              2              2609.11        3.36           
+7              1              2              1752.47        5.00           
+8              0              2              1755.52        4.99           
+9              0              1              1746.68        5.01           
+10             0              1              2318.38        3.78           
+11             2              3              1747.27        5.01           
+12             0              1              2442.24        3.59           
+13             2              3              1756.22        4.98           
+14             0              1              2616.77        3.35           

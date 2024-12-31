@@ -1,103 +1,112 @@
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import plotly.express as px
-# from classes.tailassignment import od_pairs
 
-def postprocessingTAP(mng):
 
-    # Example: assume you have a list of aircraft, each with event_calendar
-    # events that have t_beg, t_end, and location.
+def visualize_health(mng):
+    # Extract all engines from the management object
+    active_engines = [Aircraft.Engines for Aircraft in mng.aircraft_fleet]
+    shop_engines = mng.shop_engine_fleet
+    spare_engines = mng.spare_engine_fleet
 
-    print("Preparing Airports")
-    location_map = dict()
-    for idx, key in enumerate(od_pairs.keys()):
-        location_map[key] = idx
+    # Combine all engine fleets into a single list
+    engine_fleet = active_engines + spare_engines + shop_engines
 
-    print("preparing events")
-    # Flatten data into a structure that can be easily processed:
-    data = []
-    for aircraft in mng.aircraft_fleet:
-        # Sort events by t_beg to ensure chronological order
-        events = sorted(aircraft.event_calendar, key=lambda e: e.t_beg)
+    # Sort engines by their UID
+    engine_fleet = sorted(engine_fleet, key=lambda engine: engine.uid)
 
-        for event in aircraft.event_calendar:
-            # Check if it's a flight event or a ground event
-            if event.type == 'Flight':
-                # It's a flight event
-                start_time = event.t_beg
-                end_time = event.t_end
-                origin_loc_val = location_map[event.orig]
-                dest_loc_val = location_map[event.dest]
+    # Assign a unique color to each engine
+    colors = px.colors.qualitative.Plotly
+    engine_colors = {engine.uid: colors[i % len(colors)] for i, engine in enumerate(engine_fleet)}
 
-                data.append({
-                    'aircraft_id': aircraft.uid,
-                    'x': [start_time, end_time],
-                    'y': [origin_loc_val, dest_loc_val]
-                })
-            else:
-                # It's a ground event (maintenance/turnaround), same location for start and end
-                start_time = event.t_beg
-                end_time = event.t_end
-                loc_val = location_map[event.location]
+    # Define rows and columns
+    metrics = ['EGTM', 'LLP', 'SOH']  # Rows
+    dimensions = ['TIME', 'EFCs', 'EFHs']  # Columns
 
-                data.append({
-                    'aircraft_id': aircraft.uid,
-                    'x': [start_time, end_time],
-                    'y': [loc_val, loc_val]
-                })
-
-    # Now we have a list of line segments for each aircraft.
-    # Create the figure
-    fig = go.Figure()
-
-    # Add one trace per aircraft (or per leg, depending on your preference)
-    # If you want each aircraft to have one continuous line (if that makes sense for your data),
-    # you could combine all segments for that aircraft. Otherwise, just plot segments individually.
-    aircraft_ids = set(d['aircraft_id'] for d in data)
-
-    print("Looping through aircraft IDs")
-    for aircraft_id in aircraft_ids:
-        # Filter segments for this aircraft
-        segments = [d for d in data if d['aircraft_id'] == aircraft_id]
-
-        # Each segment is a small line piece. If you want them connected, you can sort by start time
-        # and flatten them into a single trace. If you prefer discrete segments, add them separately.
-
-        # Flatten all segments for this aircraft:
-        x_values = []
-        y_values = []
-        for seg in segments:
-            # Add a gap between segments to avoid connecting them if times don't match
-            # Or if you actually want a continuous line, ensure continuity.
-            if x_values:  # If already have data, add None to create a break if needed
-                x_values.append(None)
-                y_values.append(None)
-            x_values.extend(seg['x'])
-            y_values.extend(seg['y'])
-
-        fig.add_trace(go.Scatter(
-            x=x_values,
-            y=y_values,
-            mode='lines+markers',
-            name=str(aircraft_id),
-            line=dict(width=2)
-        ))
-
-    # Update the y-axis to show location names
-    fig.update_yaxes(
-        tickmode='array',
-        tickvals=list(location_map.values()),
-        ticktext=list(location_map.keys()),
-        title='Location'
+    # Create a 3x3 subplot grid with shared x and y axes
+    fig = make_subplots(
+        rows=3, cols=3,
+        shared_xaxes=True,
+        shared_yaxes=True,
+        horizontal_spacing=0.02,  # Reduced horizontal spacing
+        vertical_spacing=0.02  # Reduced vertical spacing
     )
 
+    # Populate the subplots
+    for engine in engine_fleet:
+        history = engine.history
+
+        # Extract and prepare x-axis data
+        x_time = history['TIME']  # datetime.datetime objects
+        x_efcs = history['EFCs']  # Numeric
+        x_efhs = [t.total_seconds() / 3600 for t in history['EFHs']]  # Convert timedelta to hours
+
+        x_data = {
+            'TIME': x_time,
+            'EFCs': x_efcs,
+            'EFHs': x_efhs
+        }
+
+        y_data = {
+            'EGTM': history['EGTM'],
+            'LLP': history['LLP'],
+            'SOH': history['SOH']
+        }
+
+        color = engine_colors[engine.uid]
+
+        for row_idx, metric in enumerate(metrics, 1):
+            for col_idx, dimension in enumerate(dimensions, 1):
+                # Determine if this is the first trace for the engine to show in the legend
+                show_legend = (row_idx == 1 and col_idx == 1)
+
+                fig.add_trace(
+                    go.Scatter(
+                        x=x_data[dimension],
+                        y=y_data[metric],
+                        mode='lines',
+                        name=f'Engine {engine.uid}' if show_legend else None,
+                        line=dict(color=color),
+                        showlegend=show_legend,
+                        legendgroup=f"Engine {engine.uid}"  # Group traces by engine UID
+                    ),
+                    row=row_idx,
+                    col=col_idx
+                )
+
+    # Update layout for aesthetics
     fig.update_layout(
-        title='Aircraft Movements Over Time',
-        xaxis_title='Time',
-        hovermode='x unified'
+        height=900,  # Adjust height as needed
+        width=1850,  # Adjust width to fit 16:9 aspect ratio
+        hovermode='closest',
+        legend=dict(
+            title="Engines",
+            orientation="v",
+            yanchor="top",
+            y=1,
+            xanchor="right",
+            x=1.1  # Move legend to the far right
+        ),
+        margin=dict(l=10, r=10, t=25, b=10),  # Reduce white space
     )
 
-    print("Showing Figure")
-    fig.show(renderer="browser")
+    # Update individual axis labels for shared axes
+    for row_idx, metric in enumerate(metrics, 1):
+        fig.update_yaxes(title_text=metric, row=row_idx, col=1)  # Set y-axis label for first column
+    for col_idx, dimension in enumerate(dimensions, 1):
+        fig.update_xaxes(title_text=dimension, row=3, col=col_idx)  # Set x-axis label for last row
+
+    # Display the figure in the browser
+    fig.show(renderer='browser')
+
+
+
+
+
+
+
+
+
 
 
 def postprocessingSOH(mng):
@@ -108,6 +117,7 @@ def postprocessingSOH(mng):
 
     # Combine the engine fleets
     engine_fleet = active_engines + spare_engines + shop_engines
+
 
     fig = go.Figure()
 
@@ -151,7 +161,7 @@ def postprocessingSOH(mng):
 
     fig.update_layout(
         title="EGTM and LLP over Time for All Engines",
-        xaxis_title="Time",
+        xaxis_title="TIME",
         yaxis_title="EGTM",
         hovermode='x unified',
         yaxis2=dict(

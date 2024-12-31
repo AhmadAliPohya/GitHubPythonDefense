@@ -63,6 +63,8 @@ class Aircraft:
         self.past_flights = []
         self.util_category = None
         self.scheduled_until = dt.timedelta(hours=0)
+        self.next_flights_fh_fc_ratio = 0.
+        self.goal_fh_fc_ratio = 0.
 
     def _generate_random_age(self):
         """
@@ -231,6 +233,8 @@ class Aircraft:
 
         self.next_flights.append(next_flight_info)
         self.scheduled_until += next_flight_info['t_dur']
+        self.next_flights_fh_fc_ratio = (
+                self.scheduled_until.total_seconds() / (3600 * len(self.next_flights)))
 
     def __repr__(self):
         """
@@ -359,10 +363,8 @@ class Engines:
         self.esv_until = None
 
         # Dictionary to keep history of engine parameters over time
-        self.history = {'EGTM': [], 'LLP': [], 'SOH': [], 'TIME': [], 'EFCs': []}
-
-        # Store the flight cycles at which random failures occur
-        # self.failure_efcs = []
+        self.history = {'EGTM': [], 'LLP': [], 'SOH': [],
+                        'TIME': [], 'EFCs': [], 'EFHs': []}
 
         # Retrieve the mean time between failures (MTBF) in EFC from config
         mtbf_efh = config.getfloat('Engine', 'mtbf_efh')
@@ -412,7 +414,9 @@ class Engines:
             #    del self.failure_efcs[0]
 
 
+    def attach_aircraft(self, aircraft):
 
+        self.aircraft = aircraft
 
     def deteriorate(self, flight):
         """
@@ -441,11 +445,12 @@ class Engines:
         self.history['SOH'].append(self.random_soh)
         self.history['TIME'].append(flight.t_end)
         self.history['EFCs'].append(self.fc_counter)
-
+        self.history['EFHs'].append(self.fh_counter)
 
     def soh_update(self, duration):
 
-        new_soh = self.random_params['a']*duration.total_seconds()/3600 + self.random_params['b']
+        new_soh = (self.random_params['a']*duration.total_seconds()/3600
+                   + self.random_params['b'])
         increment = 1 - new_soh
 
         return increment*np.random.uniform(-1, 3)
@@ -466,7 +471,8 @@ class Engines:
 
     def maintenance_due(self):
         """
-        Determine if maintenance is required based on EGTM, LLP, or random failure thresholds.
+        Determine if maintenance is required based on EGTM, LLP, or random
+        failure thresholds.
 
         Returns
         -------
@@ -485,7 +491,6 @@ class Engines:
 
         # Check if the next random failure is past the current fc_counter
         self.random_due = self.random_soh < 0
-        # self.random_due = self.fc_counter > self.failure_efcs[0] if self.failure_efcs else False
 
         # If any critical or random due condition is met, return True
         if self.critical_egtm_due or self.critical_llp_due or self.random_due:
@@ -504,10 +509,11 @@ class Engines:
 
         Notes
         -----
-        - Critical restorations for EGTM or LLP automatically cover the respective warning-level
-          condition.
-        - If a random failure has occurred, a partial restoration is performed and the engine is
-          marked unavailable for a shorter period (7 days) compared to other maintenance (25 days).
+        - Critical restorations for EGTM or LLP automatically cover the
+          respective warning-level condition.
+        - If a random failure has occurred, a partial restoration is performed
+          and the engine is marked unavailable for a shorter period (7 days)
+          compared to other maintenance (25 days).
         """
         # Print a maintenance log message
         logging.info("ESV for Engine %d on %s at %d EFCs"
@@ -546,7 +552,8 @@ class Engines:
 
     def egtm_restoration(self, SimTime):
         """
-        Restore EGTM to near-initial state and mark engine as unavailable for 25 days.
+        Restore EGTM to near-initial state and mark engine as unavailable
+        for 25 days.
 
         Parameters
         ----------
@@ -576,7 +583,8 @@ class Engines:
 
     def llp_restoration(self, SimTime):
         """
-        Restore LLP life to the initial value and mark engine as unavailable for 25 days.
+        Restore LLP life to the initial value and mark engine as unavailable
+        for 25 days.
 
         Parameters
         ----------
@@ -606,7 +614,8 @@ class Engines:
 
     def random_restoration(self, SimTime):
         """
-        Perform a minimal restoration to address a random failure and mark engine as unavailable for 7 days.
+        Perform a minimal restoration to address a random failure and mark
+        engine as unavailable for 7 days.
 
         Parameters
         ----------
@@ -623,3 +632,8 @@ class Engines:
 
         # Log the random failure restoration action
         logging.info(" - replacement of failed part")
+
+    def set_fh_fc_ratio(self, new_fh_fc_ratio):
+
+        self.goal_fh_fc_ratio = new_fh_fc_ratio
+        self.aircraft.goal_fh_fc_ratio = new_fh_fc_ratio

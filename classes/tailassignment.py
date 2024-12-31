@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 import numpy as np
 import datetime as dt
@@ -5,7 +6,7 @@ from classes.events import FlightEvent
 from collections import Counter
 
 
-class AssignmentManager():
+class AssignmentManager:
     def __init__(self):
 
         # Read flight data from a CSV file into a pandas DataFrame
@@ -21,9 +22,12 @@ class AssignmentManager():
         # Average flight cycles per week
         self.stats['avg_fc/week'] = self.stats['avg_fc/a'] / 52
 
+
         self.flights2assign = None
         self.fevent_params = {}
         self.fevent_info = {'name': [], 'p':[]}
+
+        self.compatible_flights = {}
 
         for _, row in data.iterrows():
 
@@ -40,10 +44,15 @@ class AssignmentManager():
             self.fevent_info['name'].append(FLIGHT_PARAMS["name"])
             self.fevent_info['p'].append(row['FREQ'])
 
+            if row['ORIG'] not in self.compatible_flights:
+                self.compatible_flights[row['ORIG']] = []
+
+            self.compatible_flights[row['ORIG']].append(row['ROUTE'])
+
     def create_flights2assign(self, mng):
 
         # Calculate the total number of flights to assign based on fleet size and average flight cycles per week
-        num_flights2assign = int(len(mng.aircraft_fleet) * 6 * self.stats['avg_fc/week'])
+        num_flights2assign = int(len(mng.aircraft_fleet) * 8 * self.stats['avg_fc/week'])
 
         flights2assign_npstr = list(
             np.random.choice(
@@ -65,8 +74,6 @@ class AssignmentManager():
 
         return np.random.choice(self.fevent_info['name'], p=self.fevent_info['p'])
 
-asmng = AssignmentManager()
-
 
 def initial(mng):
 
@@ -81,6 +88,7 @@ def initial(mng):
 
     for idx, aircraft in enumerate(mng.aircraft_fleet):
         aircraft.location = assigned_airports[idx]
+        aircraft.goal_fh_fc_ratio = asmng.stats['avg_fh']
         aircraft.next_flights.append({'dest': assigned_airports[idx],
                                       't_dur': dt.timedelta(hours=0)})
 
@@ -117,16 +125,7 @@ def initial(mng):
 
         aircraft.add_event(first_flight_event)
 
-        # Calculate Total Flight Time (TAT) statistics
-        total_ftime = np.sum(
-            [el['t_dur'] for el in aircraft.next_flights])  # Sum of flight durations
-        total_ftime_hrs = total_ftime.total_seconds() / 3600  # Convert to hours
-
-        # Calculate the remaining time gap over 6 weeks (in hours)
-        gap_6weeks = 6 * 7 * 24 - total_ftime_hrs
-
-        # Calculate average Turnaround Time (TAT) in hours
-        avg_tat_hrs = gap_6weeks / len(aircraft.next_flights)
+        avg_tat_hrs = mng.config.getfloat('Aircraft', 'avg_tat_hrs')
 
         # Assign minimum, average, and maximum TAT based on the calculated average
         aircraft.avg_tat_hrs_min = avg_tat_hrs - 0.25 * avg_tat_hrs  # 75% of average TAT
@@ -138,34 +137,59 @@ def initial(mng):
 
 def reschedule(mng):
 
+    logging.info("(%s) | Rescheduling Flights to Aircraft"
+                 % mng.SimTime.strftime("%Y-%m-%d %H:%M:%S"))
 
     flights2assign = asmng.create_flights2assign(mng)
     num_flights2assign = sum(flights2assign.values())
     remaining_flights = num_flights2assign
 
+    for aircraft in mng.aircraft_fleet:
+        aircraft.next_flights = [aircraft.next_flights[0]]
+        aircraft.scheduled_until = aircraft.next_flights[-1]['t_dur']
+
+        #if aircraft.uid == 0 and mng.SimTime > dt.datetime(2028,1,1):
+        #    aircraft.goal_fh_fc_ratio = 3.0
+
     while remaining_flights > 0:
 
-        selected_flight_str = asmng.select_flight2assign()
-        selected_flight = asmng.fevent_params[selected_flight_str]
+        for aircraft in mng.aircraft_fleet:
+            location = aircraft.next_flights[-1]['dest']
+            compatible_flightnames_all = asmng.compatible_flights[location]
 
-        availables_list = [
-            (ac, ac.scheduled_until)
-            for ac in mng.aircraft_fleet
-            if ac.next_flights[-1]['dest'] == selected_flight['orig']]
+            compatible_flightnames_filtered = []
+            t_durs = []
+            devs = []
 
-        if availables_list:
+            for flight in compatible_flightnames_all:
+                if asmng.flights2assign[flight] > 0:
+                    compatible_flightnames_filtered.append(flight)
+                    t_durs.append(asmng.fevent_params[flight]['t_dur'].total_seconds() / 3600)
+                    devs.append(np.abs(aircraft.goal_fh_fc_ratio - t_durs[-1]))
 
-            if mng.predictive:
-                pass
+
+            if len(compatible_flightnames_filtered) == 0:
+                selected_flight_str = np.random.choice(compatible_flightnames_all)
             else:
 
-                # Select the tuple with the smallest total_duration
-                aircraft, _ = min(availables_list, key=lambda x: x[1])
+                if mng.predictive:
+                    p = get_scaled_probabilities(devs, scaling_factor=5)
+                    selected_flight_str = np.random.choice(compatible_flightnames_filtered, p=p)
+                else:
+                    selected_flight_str = np.random.choice(compatible_flightnames_filtered)
 
-                aircraft.add_next_flight(selected_flight)
-
-                flights2assign[selected_flight_str] -= 1
-                remaining_flights -= 1
-
+            selected_flight = asmng.fevent_params[selected_flight_str]
+            aircraft.add_next_flight(selected_flight)
+            flights2assign[selected_flight_str] -= 1
+            remaining_flights -= 1
 
     return mng
+
+
+def get_scaled_probabilities(dev, scaling_factor=1):
+    abs_dev = np.abs(dev)
+    weights = 1 / (abs_dev + 1e-6)
+    scaled_weights = weights**scaling_factor
+    return scaled_weights / np.sum(scaled_weights)
+
+asmng = AssignmentManager()
