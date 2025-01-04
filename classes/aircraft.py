@@ -368,6 +368,11 @@ class Engines:
 
         # Retrieve the mean time between failures (MTBF) in EFC from config
         mtbf_efh = config.getfloat('Engine', 'mtbf_efh')
+        if mtbf_efh == 0:
+            mtbf_efh = 1000
+            self.random_failures = False
+        else:
+            self.random_failures = True
 
         self.random_params = {'a': -np.random.normal(1/mtbf_efh, 0.2*(1/mtbf_efh)),
                               'b': 1}
@@ -490,7 +495,10 @@ class Engines:
         self.warning_llp_due = 500 <= self.llp_life < 3000
 
         # Check if the next random failure is past the current fc_counter
-        self.random_due = self.random_soh < 0
+        if self.random_failures:
+            self.random_due = self.random_soh < 0
+        else:
+            self.random_due = False
 
         # If any critical or random due condition is met, return True
         if self.critical_egtm_due or self.critical_llp_due or self.random_due:

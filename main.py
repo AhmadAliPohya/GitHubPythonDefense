@@ -256,6 +256,36 @@ class SimulationManager:
 
         return windows
 
+
+    def find_overlaps(self, time_bounds):
+
+        # Initialize variables for overlap detection
+        overlapping_groups = []  # List to store groups of overlapping ESVs
+        visited = set()  # Set to track UIDs already processed
+
+        # Compare each ESV's time bounds with all others
+        for i, current in enumerate(time_bounds):
+            if current['UID'] in visited:  # Skip UIDs already grouped
+                continue
+
+            group = [current['UID']]  # Start a new group with the current UID
+
+            # Check for overlaps with other ESVs
+            for j, other in enumerate(time_bounds):
+                if i != j:  # Skip self-comparison
+                    # Check if current and other time bounds overlap
+                    if not (current['END'] < other['START'] or current['START'] > other['END']):
+                        group.append(other['UID'])  # Add overlapping UID to the group
+                        visited.add(other['UID'])  # Mark as visited
+
+            # Add the group to the list if it contains more than one UID
+            if len(group) > 1:
+                overlapping_groups.append(group)
+                visited.update(group)  # Mark all in the group as visited
+
+        return overlapping_groups
+
+
     def update_esv_plans(self):
         """
         Updates the ESV (Engine Shop Visit) plans for all aircraft in the fleet,
@@ -263,6 +293,15 @@ class SimulationManager:
 
         This method is called periodically in the simulation to ensure ESV schedules are optimized.
         """
+
+        overwrite_uid = self.config.getint('Other', 'ac_overwrite_uid')
+        if overwrite_uid >= 0:
+            ac_index = next((i for i, obj in enumerate(self.aircraft_fleet) if obj.uid == overwrite_uid))
+            self.aircraft_fleet[ac_index].goal_fh_fc_ratio = self.config.getfloat('Other', 'ac_overwrite_fhr')
+            return
+
+        if not self.predictive:
+            return
 
         # Log the adjustment details
         logging.info("(%s) | Updating Engine's Goal EFH/EFC Ratio"
@@ -292,38 +331,18 @@ class SimulationManager:
         time_bounds = [
             {
                 'UID': uid,
-                'START': time - dt.timedelta(weeks=1),  # Start time: 1 week before ESV
-                'END': time + dt.timedelta(weeks=3)  # End time: 3 weeks after ESV
+                'START': time - dt.timedelta(weeks=4),  # Start time: 1 week before ESV ALI: HAD TO CHANGE
+                'END': time + dt.timedelta(weeks=3+4)  # End time: 3 weeks after ESV
             }
             for uid, time in zip(esv_plan['UID'], esv_plan['TIME'])
         ]
 
-        # Initialize variables for overlap detection
-        overlapping_groups = []  # List to store groups of overlapping ESVs
-        visited = set()  # Set to track UIDs already processed
-
-        # Compare each ESV's time bounds with all others
-        for i, current in enumerate(time_bounds):
-            if current['UID'] in visited:  # Skip UIDs already grouped
-                continue
-
-            group = [current['UID']]  # Start a new group with the current UID
-
-            # Check for overlaps with other ESVs
-            for j, other in enumerate(time_bounds):
-                if i != j:  # Skip self-comparison
-                    # Check if current and other time bounds overlap
-                    if not (current['END'] < other['START'] or current['START'] > other['END']):
-                        group.append(other['UID'])  # Add overlapping UID to the group
-                        visited.add(other['UID'])  # Mark as visited
-
-            # Add the group to the list if it contains more than one UID
-            if len(group) > 1:
-                overlapping_groups.append(group)
-                visited.update(group)  # Mark all in the group as visited
+        overlapping_groups = self.find_overlaps(time_bounds)
 
         # Step 4: Redistribute overlapping ESVs to avoid conflicts
         for group in overlapping_groups:
+
+            # I THINK THERE'S AN ERROR HERE
 
             # Calculate the scope (min/max possible times) for each engine in the group
             scopes = {}
@@ -339,34 +358,51 @@ class SimulationManager:
                 scopes[uid] = self.calculate_scope(efc, time)
 
             # Adjust ESV timings within the calculated scopes
-            for uid in group:
+            while len(overlapping_groups) > 0:
+                for uid in group:
 
-                # Find the index of the current UID in the esv_plan['UID'] list again
-                index = esv_plan['UID'].index(uid)
+                    # Find the index of the current UID in the esv_plan['UID'] list again
+                    index = esv_plan['UID'].index(uid)
 
-                scope_start, scope_end = scopes[uid]  # Get scope bounds for this engine
-                opportunity_windows = self.find_opportunity_windows(time_bounds, scope_start, scope_end)
+                    scope_start, scope_end = scopes[uid]  # Get scope bounds for this engine
+                    opportunity_windows = self.find_opportunity_windows(time_bounds, scope_start, scope_end)
 
-                # If no opportunity windows exist within the scope, skip this engine
-                if not opportunity_windows:
-                    logging.info("No opportunity windows for UID %d within scope" % uid)
-                    continue
+                    # If no opportunity windows exist within the scope, skip this engine
+                    if not opportunity_windows:
+                        logging.info("No opportunity windows for UID %d within scope" % uid)
+                        continue
 
-                # Select the first available window (e.g., midpoint of the window)
-                selected_window = opportunity_windows[0]
-                target_time = min(selected_window) + np.abs(selected_window[0] - selected_window[1])/2
-                remaining_efc = esv_plan['EFCs'][index]  # Remaining EFCs until ESV
+                    # Select the first available window (e.g., midpoint of the window)
+                    selected_window = opportunity_windows[np.random.randint(len(opportunity_windows))]
+                    target_time = min(selected_window) + np.abs(selected_window[0] - selected_window[1])/2
+                    remaining_efc = esv_plan['EFCs'][index]  # Remaining EFCs until ESV
 
-                # Retrieve the turnaround time in hours
-                avg_tat_hrs = self.config.getfloat('Aircraft', 'avg_tat_hrs')
+                    # Retrieve the turnaround time in hours
+                    avg_tat_hrs = self.config.getfloat('Aircraft', 'avg_tat_hrs')
 
-                time_diff = target_time - self.SimTime
-                new_fh_fc_ratio = ((time_diff / remaining_efc) - dt.timedelta(hours=avg_tat_hrs)).total_seconds() / 3600
+                    time_diff = target_time - self.SimTime
+                    new_fh_fc_ratio = ((time_diff / remaining_efc) - dt.timedelta(hours=avg_tat_hrs)).total_seconds() / 3600
 
-                # Update the ESV plan with the adjusted time
-                esv_plan['OBJs'][index].set_fh_fc_ratio(new_fh_fc_ratio)
-                esv_plan['TIME'][index] = target_time
-                esv_plan['EFCs'][index] = new_fh_fc_ratio  # Update the EFCs with the new ratio
+                    # Update the ESV plan with the adjusted time
+                    esv_plan['OBJs'][index].set_fh_fc_ratio(new_fh_fc_ratio)
+                    esv_plan['TIME'][index] = target_time
+                    esv_plan['EFCs'][index] = new_fh_fc_ratio  # Update the EFCs with the new ratio
+
+                    time_bounds = [
+                        {
+                            'UID': uid,
+                            'START': time - dt.timedelta(weeks=4),  # Start time: 1 week before ESV ALI: HAD TO CHANGE
+                            'END': time + dt.timedelta(weeks=3 + 4)  # End time: 3 weeks after ESV
+                        }
+                        for uid, time in zip(esv_plan['UID'], esv_plan['TIME'])
+                    ]
+
+                    overlapping_groups = self.find_overlaps(time_bounds)
+
+                # Log the adjustment details
+                logging.info("(%s) | Updated Engine %d's Ratio to %.2f"
+                             % (self.SimTime.strftime("%Y-%m-%d %H:%M:%S"), esv_plan['OBJs'][index].uid, new_fh_fc_ratio))
+        return
 
 
 def find_next_aircraft(aircraft_fleet):
@@ -442,6 +478,12 @@ def main():
                     skip_maintenance = True
 
             if not skip_maintenance:
+
+                import pprint
+                print('--- Engine %d' % aircraft.Engines.uid)
+                print(aircraft.Engines.rul['EGTM']['TIME'][-1], aircraft.Engines.delete_esv_efc_abs)
+                print(mng.SimTime, aircraft.Engines.fc_counter)
+                print(mng.SimTime - aircraft.Engines.rul['EGTM']['TIME'][-1], aircraft.Engines.fc_counter - aircraft.Engines.delete_esv_efc_abs)
 
                 # Add a maintenance event
                 maintenance_event = MaintenanceEvent(

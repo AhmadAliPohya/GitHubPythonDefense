@@ -172,11 +172,16 @@ def reschedule(mng):
                 selected_flight_str = np.random.choice(compatible_flightnames_all)
             else:
 
-                if mng.predictive:
-                    p = get_scaled_probabilities(devs, scaling_factor=5)
-                    selected_flight_str = np.random.choice(compatible_flightnames_filtered, p=p)
+                #if mng.predictive:
+                if np.random.random() >= 0.25:
+                    min_dev_idx = np.argmin(devs)
+                    selected_flight_str = compatible_flightnames_filtered[min_dev_idx]
                 else:
                     selected_flight_str = np.random.choice(compatible_flightnames_filtered)
+                    #p = get_scaled_probabilities(devs, scaling_factor=5)
+                    #selected_flight_str = np.random.choice(compatible_flightnames_filtered, p=p)
+                #else:
+                ##    selected_flight_str = np.random.choice(compatible_flightnames_filtered)
 
             selected_flight = asmng.fevent_params[selected_flight_str]
             aircraft.add_next_flight(selected_flight)

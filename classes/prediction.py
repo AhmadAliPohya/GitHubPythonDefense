@@ -59,12 +59,12 @@ def predict_rul(mng):
             continue
 
         past_flights = []
-        one_week_ago = mng.SimTime - dt.timedelta(weeks=1)
+        one_week_ago = mng.SimTime - dt.timedelta(weeks=4)
         for flight in reversed(aircraft.past_flights):
             if flight.t_beg >= one_week_ago:
                 past_flights.append(flight)
 
-        avg_fc_per_week = len(past_flights)
+        avg_fc_per_week = len(past_flights) / 4
 
         # Find the first index where EFC >= 1000
         first_index = next(
@@ -140,13 +140,14 @@ def predict_rul(mng):
         next_esv_time, min_category = min(
             (category['TIME'][-1], category_key)  # Only consider the last entry ("crit") in TIME
             for category_key, category in engine.rul.items()
+            if category_key in ['LLP', 'EGTM']
         )
 
         next_esv_efcs = engine.rul[min_category]['EFC'][engine.rul[min_category]['TIME'].index(next_esv_time)]
 
         engine.next_esv = {'TIME': next_esv_time, 'EFCs': next_esv_efcs, 'DRIVER': min_category}
 
-
+        engine.delete_esv_efc_abs = efc_crit_egtm + engine.fc_counter
         # if engine.uid == 0:
 
             # delete
