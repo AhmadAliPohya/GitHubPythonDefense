@@ -49,7 +49,7 @@ def predict_rul(mng):
     logging.info("(%s) | Predicting Remaining Useful Life"
                  % mng.SimTime.strftime("%Y-%m-%d %H:%M:%S"))
 
-    for aircraft in mng.aircraft_fleet:
+    for aircraft in mng.aircrafts:
 
         engine = aircraft.Engines
 

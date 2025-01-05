@@ -52,7 +52,7 @@ class AssignmentManager:
     def create_flights2assign(self, mng):
 
         # Calculate the total number of flights to assign based on fleet size and average flight cycles per week
-        num_flights2assign = int(len(mng.aircraft_fleet) * 8 * self.stats['avg_fc/week'])
+        num_flights2assign = int(len(mng.aircrafts) * 8 * self.stats['avg_fc/week'])
 
         flights2assign_npstr = list(
             np.random.choice(
@@ -81,12 +81,12 @@ def initial(mng):
     assigned_airports = list(
         np.random.choice(
             asmng.data["ORIG"],
-            size=len(mng.aircraft_fleet),
+            size=len(mng.aircrafts),
             p=asmng.data["FREQ"]
         )
     )
 
-    for idx, aircraft in enumerate(mng.aircraft_fleet):
+    for idx, aircraft in enumerate(mng.aircrafts):
         aircraft.location = assigned_airports[idx]
         aircraft.goal_fh_fc_ratio = asmng.stats['avg_fh']
         aircraft.next_flights.append({'dest': assigned_airports[idx],
@@ -103,7 +103,7 @@ def initial(mng):
 
         availables_list = [
             (ac, ac.scheduled_until)
-            for ac in mng.aircraft_fleet
+            for ac in mng.aircrafts
             if ac.next_flights[-1]['dest'] == selected_flight['orig']]
 
         if availables_list:
@@ -116,7 +116,7 @@ def initial(mng):
             flights2assign[selected_flight_str] -= 1
             remaining_flights -= 1
 
-    for idx, aircraft in enumerate(mng.aircraft_fleet):
+    for idx, aircraft in enumerate(mng.aircrafts):
 
         del aircraft.next_flights[0]
         first_flight_params = aircraft.next_flights.pop(0)
@@ -144,13 +144,13 @@ def reschedule(mng):
     num_flights2assign = sum(flights2assign.values())
     remaining_flights = num_flights2assign
 
-    for aircraft in mng.aircraft_fleet:
+    for aircraft in mng.aircrafts:
         aircraft.next_flights = [aircraft.next_flights[0]]
         aircraft.scheduled_until = aircraft.next_flights[-1]['t_dur']
 
     while remaining_flights > 0:
 
-        for aircraft in mng.aircraft_fleet:
+        for aircraft in mng.aircrafts:
             location = aircraft.next_flights[-1]['dest']
             compatible_flightnames_all = asmng.compatible_flights[location]
 

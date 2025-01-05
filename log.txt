@@ -1,351 +1,351 @@
-2025-01-05 15:13:36 [INFO]: Created 15 aircraft
-2025-01-05 15:13:36 [INFO]: Created and attached 15 engine sets
-2025-01-05 15:13:36 [INFO]: Initialization complete. Ready to start operations.
-2025-01-05 15:13:36 [INFO]: (2025-02-01 00:43:05) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:36 [INFO]: (2025-03-01 00:57:03) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:36 [INFO]: (2025-04-01 00:19:58) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:36 [INFO]: (2025-05-01 00:20:24) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:36 [INFO]: (2025-06-01 00:11:16) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:36 [INFO]: (2025-07-01 00:54:13) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:36 [INFO]: (2025-08-01 00:59:14) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:36 [INFO]: (2025-09-01 00:15:50) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:36 [INFO]: (2025-10-01 01:40:46) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2025-11-01 01:53:41) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2025-12-01 00:42:46) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-01-01 00:27:54) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-02-01 00:03:23) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-03-01 01:39:16) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-04-01 00:55:08) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-05-01 02:13:58) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-06-01 01:28:22) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-07-01 00:57:41) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-08-01 01:03:21) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-09-01 01:10:04) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-10-01 00:03:25) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-11-01 00:11:39) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2026-12-01 00:46:42) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2027-01-01 00:31:38) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2027-02-01 04:18:25) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2027-03-01 00:02:41) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:37 [INFO]: (2027-04-01 00:47:36) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2027-05-01 00:07:27) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2027-06-01 00:37:35) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2027-07-01 00:42:59) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2027-08-01 00:37:50) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2027-09-01 00:30:07) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2027-10-01 01:20:07) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2027-11-01 02:06:18) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2027-12-01 00:11:53) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2028-01-01 03:22:40) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2028-02-01 00:28:14) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2028-03-01 00:09:48) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2028-04-01 01:38:52) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2028-05-01 00:48:58) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2028-06-01 00:07:44) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2028-07-01 00:40:56) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2028-08-01 01:05:44) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:38 [INFO]: (2028-09-01 00:28:53) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2028-10-01 01:54:36) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2028-11-01 00:32:41) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2028-12-01 01:12:07) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-01-01 01:19:55) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-02-01 00:05:01) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-03-01 00:44:40) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-04-01 00:22:50) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-05-01 00:52:13) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-06-01 00:08:11) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-07-01 00:20:55) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-08-01 01:32:52) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-09-01 00:48:26) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-10-01 00:17:01) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-11-01 02:01:44) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2029-12-01 00:04:23) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:39 [INFO]: (2030-01-01 00:45:42) | Predicting Remaining Useful Life
-2025-01-05 15:13:39 [INFO]: (2030-01-01 00:45:42) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2030-02-01 02:04:33) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2030-03-01 00:56:34) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2030-04-01 00:35:20) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2030-05-01 00:12:11) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2030-06-01 01:43:17) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2030-07-01 03:24:58) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2030-08-01 00:35:39) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2030-09-01 02:08:01) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2030-10-01 01:36:45) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2030-11-01 00:37:25) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2030-12-01 00:26:15) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2031-01-01 02:58:50) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2031-02-01 00:28:15) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2031-03-01 04:49:56) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: ESV for Engine 2 on 22.03.2031 03:12 at 6977 EFCs
-2025-01-05 15:13:40 [INFO]:  - replacement of failed part
-2025-01-05 15:13:40 [INFO]:  - EGTM restoration from 9.0°C to 31.9°C
-2025-01-05 15:13:40 [INFO]: Need 1 spare engines.
-2025-01-05 15:13:40 [INFO]: (2031-04-01 01:38:31) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2031-05-01 00:59:28) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2031-06-01 00:15:45) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:40 [INFO]: (2031-07-01 01:18:31) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: (2031-08-01 01:00:55) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: (2031-09-01 00:16:39) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: (2031-10-01 00:49:23) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: (2031-11-01 00:08:06) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: ESV for Engine 3 on 22.11.2031 10:13 at 7733 EFCs
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.9°C to 32.2°C
-2025-01-05 15:13:41 [INFO]: (2031-12-01 00:45:20) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: ESV for Engine 1 on 16.12.2031 17:50 at 7804 EFCs
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 6.8°C to 30.9°C
-2025-01-05 15:13:41 [INFO]: Need 2 spare engines.
-2025-01-05 15:13:41 [INFO]: (2032-01-01 00:00:16) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: (2032-02-01 01:25:06) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: (2032-03-01 01:35:27) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: ESV for Engine 13 on 06.03.2032 20:04 at 8045 EFCs
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.0°C to 31.1°C
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]: ESV for Engine 5 on 18.03.2032 00:34 at 8100 EFCs
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.9°C to 33.9°C
-2025-01-05 15:13:41 [INFO]: (2032-04-01 01:15:43) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: ESV for Engine 14 on 03.04.2032 13:41 at 8153 EFCs
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.0°C to 30.9°C
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]: ESV for Engine 8 on 25.04.2032 09:56 at 8223 EFCs
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.0°C to 33.7°C
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]: Need 3 spare engines.
-2025-01-05 15:13:41 [INFO]: ESV for Engine 12 on 25.04.2032 13:16 at 8204 EFCs
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.0°C to 34.7°C
-2025-01-05 15:13:41 [INFO]: Need 4 spare engines.
-2025-01-05 15:13:41 [INFO]: ESV for Engine 4 on 30.04.2032 03:58 at 8216 EFCs
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.0°C to 33.5°C
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]: Need 5 spare engines.
-2025-01-05 15:13:41 [INFO]: (2032-05-01 00:09:57) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: (2032-06-01 02:15:02) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: ESV for Engine 7 on 13.06.2032 19:37 at 8360 EFCs
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.0°C to 33.7°C
-2025-01-05 15:13:41 [INFO]: ESV for Engine 9 on 15.06.2032 15:36 at 8345 EFCs
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.0°C to 32.8°C
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]: ESV for Engine 6 on 28.06.2032 14:12 at 8386 EFCs
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.0°C to 33.9°C
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]: ESV for Engine 0 on 30.06.2032 14:41 at 8405 EFCs
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.0°C to 32.1°C
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]: Need 6 spare engines.
-2025-01-05 15:13:41 [INFO]: (2032-07-01 00:07:26) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: ESV for Engine 11 on 02.07.2032 15:40 at 8440 EFCs
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 5.0°C to 32.3°C
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]: (2032-08-01 00:32:18) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: ESV for Engine 10 on 31.08.2032 09:00 at 8586 EFCs
-2025-01-05 15:13:41 [INFO]:  - EGTM restoration from 4.9°C to 34.0°C
-2025-01-05 15:13:41 [INFO]:  - replacement of failed part
-2025-01-05 15:13:41 [INFO]: (2032-09-01 00:45:56) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: (2032-10-01 03:32:45) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:41 [INFO]: (2032-11-01 00:30:59) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2032-12-01 01:01:50) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-01-01 00:11:27) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-02-01 02:24:43) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-03-01 00:42:37) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-04-01 02:06:12) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-05-01 01:20:46) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-06-01 00:27:57) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-07-01 00:49:59) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-08-01 00:07:42) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-09-01 01:11:11) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-10-01 00:37:15) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-11-01 01:54:52) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2033-12-01 00:45:51) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2034-01-01 00:20:16) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2034-02-01 04:08:08) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2034-03-01 01:33:11) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:42 [INFO]: (2034-04-01 00:25:15) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2034-05-01 01:08:33) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: ESV for Engine 12 on 07.05.2034 13:50 at 10286 EFCs
-2025-01-05 15:13:43 [INFO]:  - replacement of failed part
-2025-01-05 15:13:43 [INFO]: (2034-06-01 00:03:42) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2034-07-01 01:08:08) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2034-08-01 02:34:22) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2034-09-01 00:55:23) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2034-10-01 01:33:13) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2034-11-01 00:30:37) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2034-12-01 02:20:32) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2035-01-01 01:12:44) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2035-02-01 00:30:39) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2035-03-01 01:29:42) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2035-04-01 01:00:02) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2035-05-01 02:15:31) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2035-06-01 00:50:52) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2035-07-01 00:46:30) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2035-08-01 01:00:33) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:43 [INFO]: (2035-09-01 01:32:18) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2035-10-01 00:45:23) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2035-11-01 00:05:30) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2035-12-01 00:05:40) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-01-01 00:01:15) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-02-01 00:49:28) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-03-01 00:59:37) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-04-01 00:23:33) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-05-01 00:20:29) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-06-01 00:04:42) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-07-01 01:07:03) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-08-01 00:50:38) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-09-01 00:02:34) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-10-01 01:20:25) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-11-01 00:14:15) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2036-12-01 02:14:15) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2037-01-01 00:26:02) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:44 [INFO]: (2037-02-01 00:24:20) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2037-03-01 00:51:36) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2037-04-01 00:40:48) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2037-05-01 00:22:38) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2037-06-01 02:46:37) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2037-07-01 01:32:46) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2037-08-01 00:51:25) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2037-09-01 01:35:16) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2037-10-01 01:22:31) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2037-11-01 02:16:57) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2037-12-01 00:39:26) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2038-01-01 00:00:42) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2038-02-01 00:06:41) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: ESV for Engine 2 on 27.02.2038 14:14 at 14012 EFCs
-2025-01-05 15:13:45 [INFO]:  - replacement of failed part
-2025-01-05 15:13:45 [INFO]: (2038-03-01 00:13:10) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2038-04-01 00:06:38) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2038-05-01 00:29:05) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2038-06-01 02:00:57) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:45 [INFO]: (2038-07-01 00:12:29) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: ESV for Engine 1001 on 08.07.2038 14:45 at 8194 EFCs
-2025-01-05 15:13:46 [INFO]:  - EGTM restoration from 5.0°C to 30.7°C
-2025-01-05 15:13:46 [INFO]:  - replacement of failed part
-2025-01-05 15:13:46 [INFO]: (2038-08-01 01:52:24) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: (2038-09-01 00:23:15) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: (2038-10-01 00:25:44) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: (2038-11-01 00:02:30) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: (2038-12-01 05:14:49) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: (2039-01-01 03:12:25) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: (2039-02-01 02:26:53) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: (2039-03-01 00:31:46) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: (2039-04-01 00:20:47) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: ESV for Engine 1002 on 14.04.2039 10:42 at 8182 EFCs
-2025-01-05 15:13:46 [INFO]:  - EGTM restoration from 5.0°C to 32.6°C
-2025-01-05 15:13:46 [INFO]:  - replacement of failed part
-2025-01-05 15:13:46 [INFO]: (2039-05-01 01:19:58) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: (2039-06-01 00:03:33) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: ESV for Engine 3 on 15.06.2039 00:15 at 15902 EFCs
-2025-01-05 15:13:46 [INFO]:  - replacement of failed part
-2025-01-05 15:13:46 [INFO]:  - EGTM restoration from 7.5°C to 33.8°C
-2025-01-05 15:13:46 [INFO]:  - LLP-RUL restoration from 1598.0EFC to 17500.0EFC
-2025-01-05 15:13:46 [INFO]: (2039-07-01 03:39:35) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: ESV for Engine 1004 on 20.07.2039 21:47 at 8110 EFCs
-2025-01-05 15:13:46 [INFO]:  - replacement of failed part
-2025-01-05 15:13:46 [INFO]:  - EGTM restoration from 5.4°C to 33.0°C
-2025-01-05 15:13:46 [INFO]: (2039-08-01 00:56:08) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: (2039-09-01 00:13:25) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: ESV for Engine 1 on 12.09.2039 20:09 at 16215 EFCs
-2025-01-05 15:13:46 [INFO]:  - replacement of failed part
-2025-01-05 15:13:46 [INFO]:  - EGTM restoration from 5.5°C to 32.2°C
-2025-01-05 15:13:46 [INFO]:  - LLP-RUL restoration from 1285.0EFC to 17500.0EFC
-2025-01-05 15:13:46 [INFO]: ESV for Engine 1005 on 24.09.2039 08:30 at 8274 EFCs
-2025-01-05 15:13:46 [INFO]:  - EGTM restoration from 5.0°C to 32.3°C
-2025-01-05 15:13:46 [INFO]:  - replacement of failed part
-2025-01-05 15:13:46 [INFO]: ESV for Engine 5 on 30.09.2039 10:09 at 16254 EFCs
-2025-01-05 15:13:46 [INFO]:  - replacement of failed part
-2025-01-05 15:13:46 [INFO]:  - EGTM restoration from 9.7°C to 33.5°C
-2025-01-05 15:13:46 [INFO]:  - LLP-RUL restoration from 1246.0EFC to 17500.0EFC
-2025-01-05 15:13:46 [INFO]: (2039-10-01 00:55:04) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: ESV for Engine 8 on 03.10.2039 15:56 at 16406 EFCs
-2025-01-05 15:13:46 [INFO]:  - replacement of failed part
-2025-01-05 15:13:46 [INFO]:  - EGTM restoration from 8.9°C to 34.8°C
-2025-01-05 15:13:46 [INFO]:  - LLP-RUL restoration from 1094.0EFC to 17500.0EFC
-2025-01-05 15:13:46 [INFO]: ESV for Engine 14 on 23.10.2039 18:11 at 16386 EFCs
-2025-01-05 15:13:46 [INFO]:  - replacement of failed part
-2025-01-05 15:13:46 [INFO]:  - EGTM restoration from 6.9°C to 33.8°C
-2025-01-05 15:13:46 [INFO]:  - LLP-RUL restoration from 1114.0EFC to 17500.0EFC
-2025-01-05 15:13:46 [INFO]: ESV for Engine 1003 on 24.10.2039 19:29 at 8398 EFCs
-2025-01-05 15:13:46 [INFO]:  - EGTM restoration from 5.0°C to 34.0°C
-2025-01-05 15:13:46 [INFO]:  - replacement of failed part
-2025-01-05 15:13:46 [INFO]: (2039-11-01 00:43:23) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:46 [INFO]: (2039-12-01 00:27:51) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: ESV for Engine 13 on 10.12.2039 03:07 at 16655 EFCs
-2025-01-05 15:13:47 [INFO]:  - EGTM restoration from 5.0°C to 32.8°C
-2025-01-05 15:13:47 [INFO]:  - LLP-RUL restoration from 845.0EFC to 17500.0EFC
-2025-01-05 15:13:47 [INFO]:  - replacement of failed part
-2025-01-05 15:13:47 [INFO]: (2040-01-01 00:05:46) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: (2040-02-01 03:03:44) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: ESV for Engine 1006 on 16.02.2040 14:28 at 8598 EFCs
-2025-01-05 15:13:47 [INFO]:  - EGTM restoration from 5.0°C to 31.3°C
-2025-01-05 15:13:47 [INFO]:  - replacement of failed part
-2025-01-05 15:13:47 [INFO]: (2040-03-01 02:14:49) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: (2040-04-01 01:56:05) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: (2040-05-01 01:49:54) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: ESV for Engine 9 on 20.05.2040 17:30 at 17002 EFCs
-2025-01-05 15:13:47 [INFO]:  - LLP-RUL restoration from 498.0EFC to 17500.0EFC
-2025-01-05 15:13:47 [INFO]:  - EGTM restoration from 7.0°C to 32.9°C
-2025-01-05 15:13:47 [INFO]:  - replacement of failed part
-2025-01-05 15:13:47 [INFO]: (2040-06-01 01:38:30) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: (2040-07-01 00:12:12) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: (2040-08-01 00:10:02) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: (2040-09-01 01:30:00) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: (2040-10-01 00:07:28) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: (2040-11-01 01:42:15) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: (2040-12-01 02:17:37) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: (2041-01-01 00:09:05) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:47 [INFO]: (2041-02-01 02:55:03) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2041-03-01 00:15:52) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2041-04-01 01:48:20) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: ESV for Engine 7 on 11.04.2041 23:26 at 10591 EFCs
-2025-01-05 15:13:48 [INFO]:  - replacement of failed part
-2025-01-05 15:13:48 [INFO]: (2041-05-01 00:32:07) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2041-06-01 04:31:49) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: ESV for Engine 2 on 07.06.2041 09:43 at 15918 EFCs
-2025-01-05 15:13:48 [INFO]:  - EGTM restoration from 5.0°C to 32.4°C
-2025-01-05 15:13:48 [INFO]:  - LLP-RUL restoration from 1582.0EFC to 17500.0EFC
-2025-01-05 15:13:48 [INFO]: (2041-07-01 00:44:41) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2041-08-01 00:37:53) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2041-09-01 03:11:10) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2041-10-01 01:32:46) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2041-11-01 01:10:54) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2041-12-01 00:43:16) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2042-01-01 00:28:18) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2042-02-01 00:03:04) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: ESV for Engine 4 on 26.02.2042 13:53 at 16978 EFCs
-2025-01-05 15:13:48 [INFO]:  - replacement of failed part
-2025-01-05 15:13:48 [INFO]:  - EGTM restoration from 6.1°C to 31.2°C
-2025-01-05 15:13:48 [INFO]:  - LLP-RUL restoration from 522.0EFC to 17500.0EFC
-2025-01-05 15:13:48 [INFO]: (2042-03-01 00:50:56) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2042-04-01 00:17:16) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2042-05-01 00:22:05) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:48 [INFO]: (2042-06-01 00:04:52) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2042-07-01 02:27:13) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2042-08-01 01:00:29) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2042-09-01 00:51:02) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2042-10-01 01:39:31) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2042-11-01 00:50:19) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2042-12-01 00:24:13) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2043-01-01 01:21:34) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2043-02-01 01:08:31) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2043-03-01 01:59:15) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2043-04-01 00:13:17) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2043-05-01 00:27:14) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2043-06-01 00:01:36) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2043-07-01 00:02:37) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2043-08-01 00:06:18) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2043-09-01 00:14:12) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2043-10-01 00:50:58) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:49 [INFO]: (2043-11-01 00:59:24) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2043-12-01 00:25:36) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-01-01 00:53:31) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-02-01 01:06:25) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-03-01 00:21:00) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-04-01 00:52:03) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-05-01 00:42:49) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-06-01 01:56:26) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-07-01 01:32:15) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-08-01 04:11:39) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-09-01 00:02:57) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-10-01 00:01:30) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-11-01 01:02:32) | Rescheduling Flights to Aircraft
-2025-01-05 15:13:50 [INFO]: (2044-12-01 00:03:34) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:29 [INFO]: Created 15 aircraft
+2025-01-05 15:54:29 [INFO]: Created and attached 15 engine sets
+2025-01-05 15:54:29 [INFO]: Initialization complete. Ready to start operations.
+2025-01-05 15:54:29 [INFO]: (2025-02-01 00:43:05) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:29 [INFO]: (2025-03-01 00:57:03) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:29 [INFO]: (2025-04-01 00:19:58) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:29 [INFO]: (2025-05-01 00:20:24) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:29 [INFO]: (2025-06-01 00:11:16) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:29 [INFO]: (2025-07-01 00:54:13) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:29 [INFO]: (2025-08-01 00:59:14) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2025-09-01 00:15:50) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2025-10-01 01:40:46) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2025-11-01 01:53:41) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2025-12-01 00:42:46) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-01-01 00:27:54) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-02-01 00:03:23) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-03-01 01:39:16) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-04-01 00:55:08) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-05-01 02:13:58) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-06-01 01:28:22) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-07-01 00:57:41) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-08-01 01:03:21) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-09-01 01:10:04) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-10-01 00:03:25) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-11-01 00:11:39) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2026-12-01 00:46:42) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2027-01-01 00:31:38) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:30 [INFO]: (2027-02-01 04:18:25) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2027-03-01 00:02:41) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2027-04-01 00:47:36) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2027-05-01 00:07:27) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2027-06-01 00:37:35) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2027-07-01 00:42:59) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2027-08-01 00:37:50) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2027-09-01 00:30:07) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2027-10-01 01:20:07) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2027-11-01 02:06:18) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2027-12-01 00:11:53) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2028-01-01 03:22:40) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2028-02-01 00:28:14) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2028-03-01 00:09:48) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2028-04-01 01:38:52) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2028-05-01 00:48:58) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2028-06-01 00:07:44) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2028-07-01 00:40:56) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:31 [INFO]: (2028-08-01 01:05:44) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2028-09-01 00:28:53) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2028-10-01 01:54:36) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2028-11-01 00:32:41) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2028-12-01 01:12:07) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-01-01 01:19:55) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-02-01 00:05:01) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-03-01 00:44:40) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-04-01 00:22:50) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-05-01 00:52:13) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-06-01 00:08:11) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-07-01 00:20:55) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-08-01 01:32:52) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-09-01 00:48:26) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-10-01 00:17:01) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-11-01 02:01:44) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2029-12-01 00:04:23) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:32 [INFO]: (2030-01-01 00:45:42) | Predicting Remaining Useful Life
+2025-01-05 15:54:33 [INFO]: (2030-01-01 00:45:42) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2030-02-01 02:04:33) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2030-03-01 00:56:34) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2030-04-01 00:35:20) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2030-05-01 00:12:11) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2030-06-01 01:43:17) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2030-07-01 03:24:58) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2030-08-01 00:35:39) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2030-09-01 02:08:01) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2030-10-01 01:36:45) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2030-11-01 00:37:25) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2030-12-01 00:26:15) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2031-01-01 02:58:50) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2031-02-01 00:28:15) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2031-03-01 04:49:56) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: ESV for Engine 2 on 22.03.2031 03:12 at 6977 EFCs
+2025-01-05 15:54:33 [INFO]:  - replacement of failed part
+2025-01-05 15:54:33 [INFO]:  - EGTM restoration from 9.0°C to 31.9°C
+2025-01-05 15:54:33 [INFO]: Need 1 spare engines.
+2025-01-05 15:54:33 [INFO]: (2031-04-01 01:38:31) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2031-05-01 00:59:28) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:33 [INFO]: (2031-06-01 00:15:45) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: (2031-07-01 01:18:31) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: (2031-08-01 01:00:55) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: (2031-09-01 00:16:39) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: (2031-10-01 00:49:23) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: (2031-11-01 00:08:06) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: ESV for Engine 3 on 22.11.2031 10:13 at 7733 EFCs
+2025-01-05 15:54:34 [INFO]:  - replacement of failed part
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 5.9°C to 32.2°C
+2025-01-05 15:54:34 [INFO]: (2031-12-01 00:45:20) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: ESV for Engine 1 on 16.12.2031 17:50 at 7804 EFCs
+2025-01-05 15:54:34 [INFO]:  - replacement of failed part
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 6.8°C to 30.9°C
+2025-01-05 15:54:34 [INFO]: Need 2 spare engines.
+2025-01-05 15:54:34 [INFO]: (2032-01-01 00:00:16) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: (2032-02-01 01:25:06) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: (2032-03-01 01:35:27) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: ESV for Engine 13 on 06.03.2032 20:04 at 8045 EFCs
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 5.0°C to 31.1°C
+2025-01-05 15:54:34 [INFO]:  - replacement of failed part
+2025-01-05 15:54:34 [INFO]: ESV for Engine 5 on 18.03.2032 00:34 at 8100 EFCs
+2025-01-05 15:54:34 [INFO]:  - replacement of failed part
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 5.9°C to 33.9°C
+2025-01-05 15:54:34 [INFO]: (2032-04-01 01:15:43) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: ESV for Engine 14 on 03.04.2032 13:41 at 8153 EFCs
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 5.0°C to 30.9°C
+2025-01-05 15:54:34 [INFO]:  - replacement of failed part
+2025-01-05 15:54:34 [INFO]: ESV for Engine 8 on 25.04.2032 09:56 at 8223 EFCs
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 5.0°C to 33.7°C
+2025-01-05 15:54:34 [INFO]:  - replacement of failed part
+2025-01-05 15:54:34 [INFO]: Need 3 spare engines.
+2025-01-05 15:54:34 [INFO]: ESV for Engine 12 on 25.04.2032 13:16 at 8204 EFCs
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 5.0°C to 34.7°C
+2025-01-05 15:54:34 [INFO]: Need 4 spare engines.
+2025-01-05 15:54:34 [INFO]: ESV for Engine 4 on 30.04.2032 03:58 at 8216 EFCs
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 5.0°C to 33.5°C
+2025-01-05 15:54:34 [INFO]:  - replacement of failed part
+2025-01-05 15:54:34 [INFO]: Need 5 spare engines.
+2025-01-05 15:54:34 [INFO]: (2032-05-01 00:09:57) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: (2032-06-01 02:15:02) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:34 [INFO]: ESV for Engine 7 on 13.06.2032 19:37 at 8360 EFCs
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 5.0°C to 33.7°C
+2025-01-05 15:54:34 [INFO]: ESV for Engine 9 on 15.06.2032 15:36 at 8345 EFCs
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 5.0°C to 32.8°C
+2025-01-05 15:54:34 [INFO]:  - replacement of failed part
+2025-01-05 15:54:34 [INFO]: ESV for Engine 6 on 28.06.2032 14:12 at 8386 EFCs
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 5.0°C to 33.9°C
+2025-01-05 15:54:34 [INFO]:  - replacement of failed part
+2025-01-05 15:54:34 [INFO]: ESV for Engine 0 on 30.06.2032 14:41 at 8405 EFCs
+2025-01-05 15:54:34 [INFO]:  - EGTM restoration from 5.0°C to 32.1°C
+2025-01-05 15:54:34 [INFO]:  - replacement of failed part
+2025-01-05 15:54:34 [INFO]: Need 6 spare engines.
+2025-01-05 15:54:34 [INFO]: (2032-07-01 00:07:26) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:35 [INFO]: ESV for Engine 11 on 02.07.2032 15:40 at 8440 EFCs
+2025-01-05 15:54:35 [INFO]:  - EGTM restoration from 5.0°C to 32.3°C
+2025-01-05 15:54:35 [INFO]:  - replacement of failed part
+2025-01-05 15:54:35 [INFO]: (2032-08-01 00:32:18) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:35 [INFO]: ESV for Engine 10 on 31.08.2032 09:00 at 8586 EFCs
+2025-01-05 15:54:35 [INFO]:  - EGTM restoration from 4.9°C to 34.0°C
+2025-01-05 15:54:35 [INFO]:  - replacement of failed part
+2025-01-05 15:54:35 [INFO]: (2032-09-01 00:45:56) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:35 [INFO]: (2032-10-01 03:32:45) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:35 [INFO]: (2032-11-01 00:30:59) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:35 [INFO]: (2032-12-01 01:01:50) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:35 [INFO]: (2033-01-01 00:11:27) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:35 [INFO]: (2033-02-01 02:24:43) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:35 [INFO]: (2033-03-01 00:42:37) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:36 [INFO]: (2033-04-01 02:06:12) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:36 [INFO]: (2033-05-01 01:20:46) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:36 [INFO]: (2033-06-01 00:27:57) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:36 [INFO]: (2033-07-01 00:49:59) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:36 [INFO]: (2033-08-01 00:07:42) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:36 [INFO]: (2033-09-01 01:11:11) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:36 [INFO]: (2033-10-01 00:37:15) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:36 [INFO]: (2033-11-01 01:54:52) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:36 [INFO]: (2033-12-01 00:45:51) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:36 [INFO]: (2034-01-01 00:20:16) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:36 [INFO]: (2034-02-01 04:08:08) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2034-03-01 01:33:11) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2034-04-01 00:25:15) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2034-05-01 01:08:33) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: ESV for Engine 12 on 07.05.2034 13:50 at 10286 EFCs
+2025-01-05 15:54:37 [INFO]:  - replacement of failed part
+2025-01-05 15:54:37 [INFO]: (2034-06-01 00:03:42) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2034-07-01 01:08:08) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2034-08-01 02:34:22) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2034-09-01 00:55:23) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2034-10-01 01:33:13) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2034-11-01 00:30:37) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2034-12-01 02:20:32) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2035-01-01 01:12:44) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2035-02-01 00:30:39) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2035-03-01 01:29:42) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2035-04-01 01:00:02) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2035-05-01 02:15:31) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:37 [INFO]: (2035-06-01 00:50:52) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2035-07-01 00:46:30) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2035-08-01 01:00:33) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2035-09-01 01:32:18) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2035-10-01 00:45:23) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2035-11-01 00:05:30) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2035-12-01 00:05:40) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2036-01-01 00:01:15) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2036-02-01 00:49:28) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2036-03-01 00:59:37) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2036-04-01 00:23:33) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2036-05-01 00:20:29) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2036-06-01 00:04:42) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2036-07-01 01:07:03) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2036-08-01 00:50:38) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2036-09-01 00:02:34) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2036-10-01 01:20:25) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:38 [INFO]: (2036-11-01 00:14:15) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2036-12-01 02:14:15) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-01-01 00:26:02) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-02-01 00:24:20) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-03-01 00:51:36) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-04-01 00:40:48) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-05-01 00:22:38) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-06-01 02:46:37) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-07-01 01:32:46) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-08-01 00:51:25) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-09-01 01:35:16) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-10-01 01:22:31) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-11-01 02:16:57) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2037-12-01 00:39:26) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2038-01-01 00:00:42) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2038-02-01 00:06:41) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: ESV for Engine 2 on 27.02.2038 14:14 at 14012 EFCs
+2025-01-05 15:54:39 [INFO]:  - replacement of failed part
+2025-01-05 15:54:39 [INFO]: (2038-03-01 00:13:10) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:39 [INFO]: (2038-04-01 00:06:38) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2038-05-01 00:29:05) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2038-06-01 02:00:57) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2038-07-01 00:12:29) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: ESV for Engine 1001 on 08.07.2038 14:45 at 8194 EFCs
+2025-01-05 15:54:40 [INFO]:  - EGTM restoration from 5.0°C to 30.7°C
+2025-01-05 15:54:40 [INFO]:  - replacement of failed part
+2025-01-05 15:54:40 [INFO]: (2038-08-01 01:52:24) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2038-09-01 00:23:15) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2038-10-01 00:25:44) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2038-11-01 00:02:30) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2038-12-01 05:14:49) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2039-01-01 03:12:25) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2039-02-01 02:26:53) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2039-03-01 00:31:46) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2039-04-01 00:20:47) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: ESV for Engine 1002 on 14.04.2039 10:42 at 8182 EFCs
+2025-01-05 15:54:40 [INFO]:  - EGTM restoration from 5.0°C to 32.6°C
+2025-01-05 15:54:40 [INFO]:  - replacement of failed part
+2025-01-05 15:54:40 [INFO]: (2039-05-01 01:19:58) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2039-06-01 00:03:33) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: ESV for Engine 3 on 15.06.2039 00:15 at 15902 EFCs
+2025-01-05 15:54:40 [INFO]:  - replacement of failed part
+2025-01-05 15:54:40 [INFO]:  - EGTM restoration from 7.5°C to 33.8°C
+2025-01-05 15:54:40 [INFO]:  - LLP-RUL restoration from 1598.0EFC to 17500.0EFC
+2025-01-05 15:54:40 [INFO]: (2039-07-01 03:39:35) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: ESV for Engine 1004 on 20.07.2039 21:47 at 8110 EFCs
+2025-01-05 15:54:40 [INFO]:  - replacement of failed part
+2025-01-05 15:54:40 [INFO]:  - EGTM restoration from 5.4°C to 33.0°C
+2025-01-05 15:54:40 [INFO]: (2039-08-01 00:56:08) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:40 [INFO]: (2039-09-01 00:13:25) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: ESV for Engine 1 on 12.09.2039 20:09 at 16215 EFCs
+2025-01-05 15:54:41 [INFO]:  - replacement of failed part
+2025-01-05 15:54:41 [INFO]:  - EGTM restoration from 5.5°C to 32.2°C
+2025-01-05 15:54:41 [INFO]:  - LLP-RUL restoration from 1285.0EFC to 17500.0EFC
+2025-01-05 15:54:41 [INFO]: ESV for Engine 1005 on 24.09.2039 08:30 at 8274 EFCs
+2025-01-05 15:54:41 [INFO]:  - EGTM restoration from 5.0°C to 32.3°C
+2025-01-05 15:54:41 [INFO]:  - replacement of failed part
+2025-01-05 15:54:41 [INFO]: ESV for Engine 5 on 30.09.2039 10:09 at 16254 EFCs
+2025-01-05 15:54:41 [INFO]:  - replacement of failed part
+2025-01-05 15:54:41 [INFO]:  - EGTM restoration from 9.7°C to 33.5°C
+2025-01-05 15:54:41 [INFO]:  - LLP-RUL restoration from 1246.0EFC to 17500.0EFC
+2025-01-05 15:54:41 [INFO]: (2039-10-01 00:55:04) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: ESV for Engine 8 on 03.10.2039 15:56 at 16406 EFCs
+2025-01-05 15:54:41 [INFO]:  - replacement of failed part
+2025-01-05 15:54:41 [INFO]:  - EGTM restoration from 8.9°C to 34.8°C
+2025-01-05 15:54:41 [INFO]:  - LLP-RUL restoration from 1094.0EFC to 17500.0EFC
+2025-01-05 15:54:41 [INFO]: ESV for Engine 14 on 23.10.2039 18:11 at 16386 EFCs
+2025-01-05 15:54:41 [INFO]:  - replacement of failed part
+2025-01-05 15:54:41 [INFO]:  - EGTM restoration from 6.9°C to 33.8°C
+2025-01-05 15:54:41 [INFO]:  - LLP-RUL restoration from 1114.0EFC to 17500.0EFC
+2025-01-05 15:54:41 [INFO]: ESV for Engine 1003 on 24.10.2039 19:29 at 8398 EFCs
+2025-01-05 15:54:41 [INFO]:  - EGTM restoration from 5.0°C to 34.0°C
+2025-01-05 15:54:41 [INFO]:  - replacement of failed part
+2025-01-05 15:54:41 [INFO]: (2039-11-01 00:43:23) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: (2039-12-01 00:27:51) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: ESV for Engine 13 on 10.12.2039 03:07 at 16655 EFCs
+2025-01-05 15:54:41 [INFO]:  - EGTM restoration from 5.0°C to 32.8°C
+2025-01-05 15:54:41 [INFO]:  - LLP-RUL restoration from 845.0EFC to 17500.0EFC
+2025-01-05 15:54:41 [INFO]:  - replacement of failed part
+2025-01-05 15:54:41 [INFO]: (2040-01-01 00:05:46) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: (2040-02-01 03:03:44) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: ESV for Engine 1006 on 16.02.2040 14:28 at 8598 EFCs
+2025-01-05 15:54:41 [INFO]:  - EGTM restoration from 5.0°C to 31.3°C
+2025-01-05 15:54:41 [INFO]:  - replacement of failed part
+2025-01-05 15:54:41 [INFO]: (2040-03-01 02:14:49) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: (2040-04-01 01:56:05) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: (2040-05-01 01:49:54) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: ESV for Engine 9 on 20.05.2040 17:30 at 17002 EFCs
+2025-01-05 15:54:41 [INFO]:  - LLP-RUL restoration from 498.0EFC to 17500.0EFC
+2025-01-05 15:54:41 [INFO]:  - EGTM restoration from 7.0°C to 32.9°C
+2025-01-05 15:54:41 [INFO]:  - replacement of failed part
+2025-01-05 15:54:41 [INFO]: (2040-06-01 01:38:30) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: (2040-07-01 00:12:12) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: (2040-08-01 00:10:02) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: (2040-09-01 01:30:00) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: (2040-10-01 00:07:28) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:41 [INFO]: (2040-11-01 01:42:15) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2040-12-01 02:17:37) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2041-01-01 00:09:05) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2041-02-01 02:55:03) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2041-03-01 00:15:52) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2041-04-01 01:48:20) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: ESV for Engine 7 on 11.04.2041 23:26 at 10591 EFCs
+2025-01-05 15:54:42 [INFO]:  - replacement of failed part
+2025-01-05 15:54:42 [INFO]: (2041-05-01 00:32:07) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2041-06-01 04:31:49) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: ESV for Engine 2 on 07.06.2041 09:43 at 15918 EFCs
+2025-01-05 15:54:42 [INFO]:  - EGTM restoration from 5.0°C to 32.4°C
+2025-01-05 15:54:42 [INFO]:  - LLP-RUL restoration from 1582.0EFC to 17500.0EFC
+2025-01-05 15:54:42 [INFO]: (2041-07-01 00:44:41) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2041-08-01 00:37:53) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2041-09-01 03:11:10) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2041-10-01 01:32:46) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2041-11-01 01:10:54) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2041-12-01 00:43:16) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2042-01-01 00:28:18) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: (2042-02-01 00:03:04) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:42 [INFO]: ESV for Engine 4 on 26.02.2042 13:53 at 16978 EFCs
+2025-01-05 15:54:42 [INFO]:  - replacement of failed part
+2025-01-05 15:54:42 [INFO]:  - EGTM restoration from 6.1°C to 31.2°C
+2025-01-05 15:54:42 [INFO]:  - LLP-RUL restoration from 522.0EFC to 17500.0EFC
+2025-01-05 15:54:42 [INFO]: (2042-03-01 00:50:56) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2042-04-01 00:17:16) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2042-05-01 00:22:05) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2042-06-01 00:04:52) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2042-07-01 02:27:13) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2042-08-01 01:00:29) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2042-09-01 00:51:02) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2042-10-01 01:39:31) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2042-11-01 00:50:19) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2042-12-01 00:24:13) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2043-01-01 01:21:34) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2043-02-01 01:08:31) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2043-03-01 01:59:15) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2043-04-01 00:13:17) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2043-05-01 00:27:14) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2043-06-01 00:01:36) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:43 [INFO]: (2043-07-01 00:02:37) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2043-08-01 00:06:18) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2043-09-01 00:14:12) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2043-10-01 00:50:58) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2043-11-01 00:59:24) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2043-12-01 00:25:36) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2044-01-01 00:53:31) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2044-02-01 01:06:25) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2044-03-01 00:21:00) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2044-04-01 00:52:03) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2044-05-01 00:42:49) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2044-06-01 01:56:26) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2044-07-01 01:32:15) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2044-08-01 04:11:39) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2044-09-01 00:02:57) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2044-10-01 00:01:30) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:44 [INFO]: (2044-11-01 01:02:32) | Rescheduling Flights to Aircraft
+2025-01-05 15:54:45 [INFO]: (2044-12-01 00:03:34) | Rescheduling Flights to Aircraft

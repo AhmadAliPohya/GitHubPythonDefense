@@ -5,9 +5,9 @@ import plotly.express as px
 
 def visualize_health(mng):
     # Extract all engines from the management object
-    active_engines = [Aircraft.Engines for Aircraft in mng.aircraft_fleet]
-    shop_engines = mng.shop_engine_fleet
-    spare_engines = mng.spare_engine_fleet
+    active_engines = [Aircraft.Engines for Aircraft in mng.aircrafts]
+    shop_engines = mng.engines_in_shop
+    spare_engines = mng.engines_in_pool
 
     # Combine all engine fleets into a single list
     engine_fleet = active_engines + spare_engines + shop_engines
@@ -111,9 +111,9 @@ def visualize_health(mng):
 
 def postprocessingSOH(mng):
 
-    active_engines = [Aircraft.Engines for Aircraft in mng.aircraft_fleet]
-    shop_engines = mng.shop_engine_fleet
-    spare_engines = mng.spare_engine_fleet
+    active_engines = [Aircraft.Engines for Aircraft in mng.aircrafts]
+    shop_engines = mng.engines_in_shop
+    spare_engines = mng.engines_in_pool
 
     # Combine the engine fleets
     engine_fleet = active_engines + spare_engines + shop_engines
@@ -202,19 +202,19 @@ def minimal_report(mng):
     report_lines.append("")
 
     # Second block: Global parameters
-    num_aircraft = len(mng.aircraft_fleet)
+    num_aircraft = len(mng.aircrafts)
 
     # Count all shop visits by looking for "EngineExchange" in event calendars
     total_shop_visits = sum(
-        1 for ac in mng.aircraft_fleet for event in ac.event_calendar
+        1 for ac in mng.aircrafts for event in ac.event_calendar
         if getattr(event, 'workscope', None) == "EngineExchange"
     )
 
     # Fleet averages
-    avg_fc_per_year = sum(ac.fc_counter for ac in mng.aircraft_fleet) / num_aircraft
+    avg_fc_per_year = sum(ac.fc_counter for ac in mng.aircrafts) / num_aircraft
     avg_fh_per_fc = (
-            sum(ac.fh_counter.total_seconds() / 3600 for ac in mng.aircraft_fleet) /
-            sum(ac.fc_counter for ac in mng.aircraft_fleet)
+            sum(ac.fh_counter.total_seconds() / 3600 for ac in mng.aircrafts) /
+            sum(ac.fc_counter for ac in mng.aircrafts)
     )
 
     report_lines.append("Global Parameters:")
@@ -230,7 +230,7 @@ def minimal_report(mng):
     report_lines.append(f"{'Aircraft ID':<15}{'AOG Events':<15}{'Shop Visits':<15}"
                         f"{'Avg FC/Year':<15}{'Avg FH/FC':<15}")
 
-    for ac in mng.aircraft_fleet:
+    for ac in mng.aircrafts:
         # Count shop visits for this aircraft
         shop_visits = sum(
             1 for event in ac.event_calendar
