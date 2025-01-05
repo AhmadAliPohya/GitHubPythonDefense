@@ -148,9 +148,6 @@ def reschedule(mng):
         aircraft.next_flights = [aircraft.next_flights[0]]
         aircraft.scheduled_until = aircraft.next_flights[-1]['t_dur']
 
-        #if aircraft.uid == 0 and mng.SimTime > dt.datetime(2028,1,1):
-        #    aircraft.goal_fh_fc_ratio = 3.0
-
     while remaining_flights > 0:
 
         for aircraft in mng.aircraft_fleet:
@@ -167,21 +164,15 @@ def reschedule(mng):
                     t_durs.append(asmng.fevent_params[flight]['t_dur'].total_seconds() / 3600)
                     devs.append(np.abs(aircraft.goal_fh_fc_ratio - t_durs[-1]))
 
-
             if len(compatible_flightnames_filtered) == 0:
                 selected_flight_str = np.random.choice(compatible_flightnames_all)
             else:
 
-                #if mng.predictive:
                 if np.random.random() >= 0.25:
                     min_dev_idx = np.argmin(devs)
                     selected_flight_str = compatible_flightnames_filtered[min_dev_idx]
                 else:
                     selected_flight_str = np.random.choice(compatible_flightnames_filtered)
-                    #p = get_scaled_probabilities(devs, scaling_factor=5)
-                    #selected_flight_str = np.random.choice(compatible_flightnames_filtered, p=p)
-                #else:
-                ##    selected_flight_str = np.random.choice(compatible_flightnames_filtered)
 
             selected_flight = asmng.fevent_params[selected_flight_str]
             aircraft.add_next_flight(selected_flight)
@@ -190,11 +181,5 @@ def reschedule(mng):
 
     return mng
 
-
-def get_scaled_probabilities(dev, scaling_factor=1):
-    abs_dev = np.abs(dev)
-    weights = 1 / (abs_dev + 1e-6)
-    scaled_weights = weights**scaling_factor
-    return scaled_weights / np.sum(scaled_weights)
 
 asmng = AssignmentManager()

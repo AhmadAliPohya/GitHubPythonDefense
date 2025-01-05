@@ -42,7 +42,6 @@ class Aircraft:
     """
 
     def __init__(self, uid, config):
-
         # Store basic attributes
         self.uid = uid
         self.config = config
@@ -180,7 +179,7 @@ class Aircraft:
         # Return the random sample from the truncated normal distribution
         return truncnorm.rvs(a, b, loc=mean, scale=std)
 
-    def attach_engines(self, engine_set):
+    def attach_engines(self, engine_set, current_time=None):
         """
         Attach a set of engines to the aircraft.
 
@@ -190,6 +189,13 @@ class Aircraft:
             The engine (or engines) to be attached to the aircraft.
         """
         self.Engines = engine_set  # Store the engine set in the aircraft attribute
+        self.Engines.attach_aircraft(self, current_time)
+
+    def detach_engines(self, current_time):
+        self.Engines.detach_aircraft(current_time)
+        engine2return = self.Engines
+        self.Engines = None
+        return engine2return
 
     def add_event(self, event):
         """
@@ -230,7 +236,6 @@ class Aircraft:
             self.past_flights.append(event)
 
     def add_next_flight(self, next_flight_info):
-
         self.next_flights.append(next_flight_info)
         self.scheduled_until += next_flight_info['t_dur']
         self.next_flights_fh_fc_ratio = (
@@ -333,6 +338,8 @@ class Engines:
             hours for engine initialization.
         """
         # Store basic identifiers
+        self.ages_dt = dict()
+        self.aircraft = None
         self.warning_egtm_due = False
         self.critical_egtm_due = False
         self.warning_llp_due = False
@@ -341,6 +348,7 @@ class Engines:
         self.config = config
         self.event_calendar = []
         self.current_state = None
+        self.predictive = config.get('Simulation', 'maint_strategy') == 'predictive'
 
         # Read engine thresholds and counters from config
         self.egtm_init = config.getfloat('Engine', 'egtm_init')
@@ -367,14 +375,14 @@ class Engines:
                         'TIME': [], 'EFCs': [], 'EFHs': []}
 
         # Retrieve the mean time between failures (MTBF) in EFC from config
-        mtbf_efh = config.getfloat('Engine', 'mtbf_efh')
-        if mtbf_efh == 0:
-            mtbf_efh = 1000
+        mtbf_yrs = config.getfloat('Engine', 'mtbf_yrs')
+        if mtbf_yrs == 0:
+            mtbf_yrs = 8
             self.random_failures = False
         else:
             self.random_failures = True
 
-        self.random_params = {'a': -np.random.normal(1/mtbf_efh, 0.2*(1/mtbf_efh)),
+        self.random_params = {'a': -np.random.normal(1 / mtbf_yrs, 0.1 * (1 / mtbf_yrs)),
                               'b': 1}
 
         # If no aircraft is provided, initialize engine attributes to zero or defaults
@@ -386,6 +394,7 @@ class Engines:
             self.egtm = self.egtm_init
             self.llp_life = self.llp_life_init
             self.random_soh = 1
+            self.soh_age = dt.timedelta(days=0)
         else:
             # If attached to an aircraft, synchronize engine attributes
             self.age = aircraft.age
@@ -396,8 +405,9 @@ class Engines:
             # Adjust the initial EGTM, LLP, and random life based on existing usage
             self.egtm = self.egtm_init - self.fc_counter * self.egti_per_fc
             self.llp_life = self.llp_life_init - self.fc_counter
+            self.soh_age = self.age
             self.random_soh = (
-                    self.random_params['a']*self.fh_counter.total_seconds()/3600
+                    self.random_params['a'] * (self.soh_age.total_seconds() / (3600 * 24 * 365))
                     + self.random_params['b'])
 
             # If EGTM has dropped below a threshold, increment resets until it's above 7.5
@@ -412,16 +422,25 @@ class Engines:
 
             while self.random_soh < 0:
                 self.random_soh += 1
+                self.soh_age -= dt.timedelta(days=365 * config.getfloat('Engine', 'mtbf_yrs'))
+                self.random_soh = (
+                        self.random_params['a'] * (self.soh_age.total_seconds() / (3600 * 24 * 365))
+                        + self.random_params['b'])
 
-            # Remove any random failures that occurred before the current fc_counter
-            # so the next failure will be in the future
-            #while self.failure_efcs and self.failure_efcs[0] < self.fc_counter:
-            #    del self.failure_efcs[0]
+    def detach_aircraft(self, current_time):
 
+        self.ages_dt['off aircraft'] = current_time
+        self.aircraft = None
 
-    def attach_aircraft(self, aircraft):
+    def attach_aircraft(self, aircraft, current_time):
 
         self.aircraft = aircraft
+        self.ages_dt['on aircraft'] = current_time
+        if 'off aircraft' in self.ages_dt.keys():
+            self.age += current_time - self.ages_dt['off aircraft']
+            self.soh_update()
+            if self.maintenance_due() and self.warning_soh_due:
+                self.random_restoration()
 
     def deteriorate(self, flight):
         """
@@ -442,7 +461,7 @@ class Engines:
         # Decrease LLP life by 1 EFC for every flight
         self.llp_life -= 1
         # Decrease SOH of component
-        self.random_soh -= self.soh_update(flight.t_dur)
+        self.random_soh += self.soh_update()
 
         # Record the updated engine state to the history dictionary
         self.history['EGTM'].append(self.egtm)
@@ -452,13 +471,18 @@ class Engines:
         self.history['EFCs'].append(self.fc_counter)
         self.history['EFHs'].append(self.fh_counter)
 
-    def soh_update(self, duration):
+    def soh_update(self):
 
-        new_soh = (self.random_params['a']*duration.total_seconds()/3600
-                   + self.random_params['b'])
-        increment = 1 - new_soh
+        soh_age_yrs_previous = self.soh_age.total_seconds() / (3600 * 24 * 365)
+        soh_age_yrs_current = self.age.total_seconds() / (3600 * 24 * 365)
+        soh_age_diff = soh_age_yrs_current - soh_age_yrs_previous
 
-        return increment*np.random.uniform(-1, 3)
+        increment = self.random_params['a'] * soh_age_diff
+
+        self.soh_age = dt.timedelta(hours=self.age.total_seconds() / 3600)
+
+        #return increment
+        return increment*np.random.uniform(-2, 4)
 
     def egt_increase(self):
         """
@@ -471,7 +495,7 @@ class Engines:
         """
 
         efc_rate = 3 if self.fc_counter > 1000 else 8
-        efc_rate_with_noise = efc_rate * np.random.uniform(-1, 3)
+        efc_rate_with_noise = efc_rate * np.random.uniform(-2, 4)
         return efc_rate_with_noise / 1000
 
     def maintenance_due(self):
@@ -487,21 +511,20 @@ class Engines:
         # Critical threshold for EGTM
         self.critical_egtm_due = self.egtm < 5
         # Warning threshold for EGTM
-        self.warning_egtm_due = 5 <= self.egtm < 10
+        self.warning_egtm_due = self.egtm < 10
 
         # Critical threshold for LLP
         self.critical_llp_due = self.llp_life < 500
         # Warning threshold for LLP
-        self.warning_llp_due = 500 <= self.llp_life < 3000
+        self.warning_llp_due = self.llp_life < 3000
 
-        # Check if the next random failure is past the current fc_counter
-        if self.random_failures:
-            self.random_due = self.random_soh < 0
-        else:
-            self.random_due = False
+        # Critical threshold for SOH
+        self.critical_soh_due = self.random_soh < 0.1 if self.predictive else self.random_soh < 0
+        # Warning threshold for SOH
+        self.warning_soh_due = self.random_soh < 0.2
 
         # If any critical or random due condition is met, return True
-        if self.critical_egtm_due or self.critical_llp_due or self.random_due:
+        if self.critical_egtm_due or self.critical_llp_due or self.critical_soh_due:
             return True
         else:
             return False
@@ -525,10 +548,10 @@ class Engines:
         """
         # Print a maintenance log message
         logging.info("ESV for Engine %d on %s at %d EFCs"
-              % (self.uid, SimTime.strftime("%d.%m.%Y %H:%M"), self.fc_counter))
+                     % (self.uid, SimTime.strftime("%d.%m.%Y %H:%M"), self.fc_counter))
 
         # Handle random failure repairs first
-        if self.random_due:
+        if self.critical_soh_due:
             self.random_restoration(SimTime)
             # If EGTM was at warning level, also restore EGTM
             if self.warning_egtm_due:
@@ -543,6 +566,8 @@ class Engines:
             # Also handle warning-level LLP if present
             if self.warning_llp_due:
                 self.llp_restoration(SimTime)
+            if self.warning_soh_due:
+                self.random_restoration(SimTime)
 
         # Handle critical LLP restoration
         if self.critical_llp_due:
@@ -550,6 +575,8 @@ class Engines:
             # Also handle warning-level EGTM if present
             if self.warning_egtm_due:
                 self.egtm_restoration(SimTime)
+            if self.warning_soh_due:
+                self.random_restoration(SimTime)
 
         # Record the updated engine state after restoration
         self.history['EGTM'].append(self.egtm)
@@ -587,7 +614,7 @@ class Engines:
 
         # Log the restoration action
         logging.info(" - EGTM restoration from %.1f°C to %.1f°C"
-              % (old_egtm, new_egtm))
+                     % (old_egtm, new_egtm))
 
     def llp_restoration(self, SimTime):
         """
@@ -618,9 +645,9 @@ class Engines:
 
         # Log the restoration action
         logging.info(" - LLP-RUL restoration from %.1fEFC to %.1fEFC"
-              % (old_llp_life, new_llp_life))
+                     % (old_llp_life, new_llp_life))
 
-    def random_restoration(self, SimTime):
+    def random_restoration(self, SimTime=None):
         """
         Perform a minimal restoration to address a random failure and mark
         engine as unavailable for 7 days.
@@ -631,12 +658,11 @@ class Engines:
             The current simulation time.
         """
         # Clear the random failure flag and move the next random failure
-        self.random_due = False
-        self.esv_until = SimTime + dt.timedelta(days=7)
+        self.critical_soh_due = False
+        self.warning_soh_due = False
+        if SimTime is not None:
+            self.esv_until = SimTime + dt.timedelta(days=7)
         self.random_soh = 1
-
-        # Remove the failure count that just triggered the restoration
-        # del self.failure_efcs[0]
 
         # Log the random failure restoration action
         logging.info(" - replacement of failed part")

@@ -32,6 +32,7 @@ class SimulationManager:
         config_path : str
             Path to the configuration file.
         """
+        self.time_bounds = []
         self.current_time = None
         self.num_needed_spares = 0
         self.aog_events = 0
@@ -45,6 +46,12 @@ class SimulationManager:
 
         # Read configuration
         self.read_config(config_path)
+
+        # Initiate Simulation Time
+        SimTime_str = self.config.get('Simulation', 'initial_time')
+        self.SimTime = dt.datetime.strptime(SimTime_str, '%Y-%m-%d %H:%M:%S')
+        sim_duration = self.config.getint('Simulation', 'sim_duration')
+        self.EndTime = self.SimTime + dt.timedelta(days=365 * sim_duration)
 
         # Initialize settings
         self.mro_base = self.config.get('Other', 'mro_base')
@@ -60,13 +67,6 @@ class SimulationManager:
 
         # Create and attach engine sets to aircraft
         self.create_and_attach_engines(num_aircraft, self.aircraft_fleet)
-
-        # Initiate Simulation Time
-        SimTime_str = self.config.get('Simulation', 'initial_time')
-        self.SimTime = dt.datetime.strptime(SimTime_str, '%Y-%m-%d %H:%M:%S')
-        sim_duration = self.config.getint('Simulation', 'sim_duration')
-        self.EndTime = self.SimTime + dt.timedelta(days=365 * sim_duration)
-
 
         logging.info("Initialization complete. Ready to start operations.")
 
@@ -121,8 +121,8 @@ class SimulationManager:
         engine_fleet = []
         for n in range(num_aircraft):
             engines = Engines(uid=n, config=self.config, aircraft=aircraft_fleet[n])
-            aircraft_fleet[n].attach_engines(engines)
-            engines.attach_aircraft(aircraft_fleet[n])
+            aircraft_fleet[n].attach_engines(engines, self.SimTime)
+            #engines.attach_aircraft(aircraft_fleet[n])
             engine_fleet.append(engines)
         logging.info("Created and attached %d engine sets" % len(engine_fleet))
         return engine_fleet
@@ -166,11 +166,10 @@ class SimulationManager:
             possible times for the ESV.
         """
 
-        delta_t = esv_time - self.SimTime
-        delta_fc = efc
-        avg_tat = self.config.getfloat('Aircraft', 'avg_tat_hrs')
-        a = delta_t / delta_fc - dt.timedelta(hours=avg_tat)
-
+        # delta_t = esv_time - self.SimTime
+        # delta_fc = efc
+        # avg_tat = self.config.getfloat('Aircraft', 'avg_tat_hrs')
+        # a = delta_t / delta_fc - dt.timedelta(hours=avg_tat)
 
         # 6 FH/FC for delay (longer flights) and 2 FH/FC for early (shorter flights)
         lower_bound = self.SimTime + dt.timedelta(hours=efc * (2 + self.config.getfloat('Aircraft', 'avg_tat_hrs')))
@@ -178,17 +177,13 @@ class SimulationManager:
 
         return lower_bound, upper_bound
 
-
-
-    def find_opportunity_windows(self, time_bounds, scope_start, scope_end):
+    def find_opportunity_windows(self, scope_start, scope_end):
         """
         Finds time windows within the given scope where no ESVs are scheduled,
         accounting for overlapping ESVs.
 
         Parameters
         ----------
-        time_bounds : list of dict
-            A list of dictionaries containing UID, START, and END times for ESVs.
         scope_start : datetime
             The start of the scope to search for opportunity windows.
         scope_end : datetime
@@ -201,7 +196,7 @@ class SimulationManager:
             where no ESVs are scheduled, meeting the minimum duration requirement.
         """
         # Sort time bounds by their start time
-        sorted_bounds = sorted(time_bounds, key=lambda x: x['START'])
+        sorted_bounds = sorted(self.time_bounds, key=lambda x: x['START'])
 
         # List to store identified windows
         windows = []
@@ -256,22 +251,21 @@ class SimulationManager:
 
         return windows
 
-
-    def find_overlaps(self, time_bounds):
+    def find_overlaps(self):
 
         # Initialize variables for overlap detection
         overlapping_groups = []  # List to store groups of overlapping ESVs
         visited = set()  # Set to track UIDs already processed
 
         # Compare each ESV's time bounds with all others
-        for i, current in enumerate(time_bounds):
+        for i, current in enumerate(self.time_bounds):
             if current['UID'] in visited:  # Skip UIDs already grouped
                 continue
 
             group = [current['UID']]  # Start a new group with the current UID
 
             # Check for overlaps with other ESVs
-            for j, other in enumerate(time_bounds):
+            for j, other in enumerate(self.time_bounds):
                 if i != j:  # Skip self-comparison
                     # Check if current and other time bounds overlap
                     if not (current['END'] < other['START'] or current['START'] > other['END']):
@@ -285,13 +279,24 @@ class SimulationManager:
 
         return overlapping_groups
 
+    def identify_time_bounds(self, esv_plan):
+
+        self.time_bounds = [
+            {
+                'UID': uid,
+                'START': time - dt.timedelta(weeks=4),  # Start time with uncertainty
+                'END': time + dt.timedelta(weeks=3 + 4)  # End time with uncertainty
+            }
+            for uid, time in zip(esv_plan['UID'], esv_plan['TIME'])
+        ]
 
     def update_esv_plans(self):
         """
         Updates the ESV (Engine Shop Visit) plans for all aircraft in the fleet,
         identifies overlapping ESVs, and redistributes them to avoid conflicts.
 
-        This method is called periodically in the simulation to ensure ESV schedules are optimized.
+        This method is called periodically in the simulation to ensure ESV
+        schedules are optimized.
         """
 
         overwrite_uid = self.config.getint('Other', 'ac_overwrite_uid')
@@ -328,80 +333,76 @@ class SimulationManager:
 
         # Step 3: Identify overlapping ESVs using time bounds
         # Define time windows for each ESV (1 week before to 3 weeks after)
-        time_bounds = [
-            {
-                'UID': uid,
-                'START': time - dt.timedelta(weeks=4),  # Start time: 1 week before ESV ALI: HAD TO CHANGE
-                'END': time + dt.timedelta(weeks=3+4)  # End time: 3 weeks after ESV
-            }
-            for uid, time in zip(esv_plan['UID'], esv_plan['TIME'])
-        ]
+        self.identify_time_bounds(esv_plan)
 
-        overlapping_groups = self.find_overlaps(time_bounds)
+        overlapping_groups = self.find_overlaps()
 
-        # Step 4: Redistribute overlapping ESVs to avoid conflicts
-        for group in overlapping_groups:
+        # Adjust ESV timings within the calculated scopes
+        while len(overlapping_groups) > 0:
 
-            # I THINK THERE'S AN ERROR HERE
+            # Step 4: Redistribute overlapping ESVs to avoid conflicts
+            for group in overlapping_groups:
 
-            # Calculate the scope (min/max possible times) for each engine in the group
-            scopes = {}
-            for uid in group:
-                # Find the index of the current UID in the esv_plan['UID'] list
-                index = esv_plan['UID'].index(uid)
+                # I THINK THERE'S AN ERROR HERE
 
-                # Use the index to retrieve the corresponding EFC and TIME
-                efc = esv_plan['EFCs'][index]
-                time = esv_plan['TIME'][index]
+                # Calculate the scope (min/max possible times) for each engine in the group
+                scopes = {}
+                for uid in group:
+                    # Find the index of the current UID in the esv_plan['UID'] list
+                    index = esv_plan['UID'].index(uid)
 
-                # Calculate the scope and store it
-                scopes[uid] = self.calculate_scope(efc, time)
+                    # Use the index to retrieve the corresponding EFC and TIME
+                    efc = esv_plan['EFCs'][index]
+                    time = esv_plan['TIME'][index]
 
-            # Adjust ESV timings within the calculated scopes
-            while len(overlapping_groups) > 0:
+                    # Calculate the scope and store it
+                    scopes[uid] = self.calculate_scope(efc, time)
+
+                no_opp_windows_found = 0
+
                 for uid in group:
 
                     # Find the index of the current UID in the esv_plan['UID'] list again
                     index = esv_plan['UID'].index(uid)
 
                     scope_start, scope_end = scopes[uid]  # Get scope bounds for this engine
-                    opportunity_windows = self.find_opportunity_windows(time_bounds, scope_start, scope_end)
+                    opportunity_windows = self.find_opportunity_windows(scope_start, scope_end)
 
                     # If no opportunity windows exist within the scope, skip this engine
                     if not opportunity_windows:
-                        logging.info("No opportunity windows for UID %d within scope" % uid)
+                        logging.info("(%s) | No opportunity windows for UID %d within scope"
+                                     % (self.SimTime.strftime("%Y-%m-%d %H:%M:%S"), uid))
+                        no_opp_windows_found += 1
                         continue
 
                     # Select the first available window (e.g., midpoint of the window)
                     selected_window = opportunity_windows[np.random.randint(len(opportunity_windows))]
-                    target_time = min(selected_window) + np.abs(selected_window[0] - selected_window[1])/2
+                    target_time = min(selected_window) + np.abs(selected_window[0] - selected_window[1]) / 2
                     remaining_efc = esv_plan['EFCs'][index]  # Remaining EFCs until ESV
 
                     # Retrieve the turnaround time in hours
                     avg_tat_hrs = self.config.getfloat('Aircraft', 'avg_tat_hrs')
 
                     time_diff = target_time - self.SimTime
-                    new_fh_fc_ratio = ((time_diff / remaining_efc) - dt.timedelta(hours=avg_tat_hrs)).total_seconds() / 3600
+                    new_fh_fc_ratio = ((time_diff / remaining_efc) - dt.timedelta(
+                        hours=avg_tat_hrs)).total_seconds() / 3600
 
                     # Update the ESV plan with the adjusted time
                     esv_plan['OBJs'][index].set_fh_fc_ratio(new_fh_fc_ratio)
                     esv_plan['TIME'][index] = target_time
                     esv_plan['EFCs'][index] = new_fh_fc_ratio  # Update the EFCs with the new ratio
 
-                    time_bounds = [
-                        {
-                            'UID': uid,
-                            'START': time - dt.timedelta(weeks=4),  # Start time: 1 week before ESV ALI: HAD TO CHANGE
-                            'END': time + dt.timedelta(weeks=3 + 4)  # End time: 3 weeks after ESV
-                        }
-                        for uid, time in zip(esv_plan['UID'], esv_plan['TIME'])
-                    ]
+                    self.identify_time_bounds(esv_plan)
 
-                    overlapping_groups = self.find_overlaps(time_bounds)
+                    # Log the adjustment details
+                    logging.info("(%s) | Updated Engine %d's Ratio to %.2f"
+                                 % (self.SimTime.strftime("%Y-%m-%d %H:%M:%S"), esv_plan['OBJs'][index].uid,
+                                    new_fh_fc_ratio))
 
-                # Log the adjustment details
-                logging.info("(%s) | Updated Engine %d's Ratio to %.2f"
-                             % (self.SimTime.strftime("%Y-%m-%d %H:%M:%S"), esv_plan['OBJs'][index].uid, new_fh_fc_ratio))
+            if no_opp_windows_found == len(group):
+                break
+            overlapping_groups = self.find_overlaps()
+
         return
 
 
@@ -434,7 +435,6 @@ def main():
 
     while True:
 
-
         # Find the next aircraft to process
         idx_aircraft = find_next_aircraft(mng.aircraft_fleet)
         aircraft = mng.aircraft_fleet[idx_aircraft]
@@ -454,7 +454,7 @@ def main():
                 # "grounded" for 24 hours. Think of this as the waiting time until
                 # the spare engines come in by freighter.
 
-                if aircraft.Engines.random_due:
+                if aircraft.Engines.critical_soh_due and not aircraft.Engines.predictive:
 
                     downtime_event = MaintenanceEvent(
                         location=aircraft.location,
@@ -475,15 +475,26 @@ def main():
                     # airport, it'll be visited within the timeframe anyways
                     # without our need for intervention
 
-                    skip_maintenance = True
+                    if mng.mro_base in [el['dest'] for el in aircraft.next_flights]:
+
+                        skip_maintenance = True
+
+                    else:
+
+                        # Just do maintenance there (assumption, otherwise I'd
+                        # have to recall the reschedule thing and have it
+                        # choose the base with higher priority - this complexity
+                        # is not worth it).
+                        skip_maintenance = False
 
             if not skip_maintenance:
 
-                import pprint
-                print('--- Engine %d' % aircraft.Engines.uid)
-                print(aircraft.Engines.rul['EGTM']['TIME'][-1], aircraft.Engines.delete_esv_efc_abs)
-                print(mng.SimTime, aircraft.Engines.fc_counter)
-                print(mng.SimTime - aircraft.Engines.rul['EGTM']['TIME'][-1], aircraft.Engines.fc_counter - aircraft.Engines.delete_esv_efc_abs)
+                # import pprint
+                # print('--- Engine %d' % aircraft.Engines.uid)
+                # print(aircraft.Engines.rul['EGTM']['TIME'][-1], aircraft.Engines.delete_esv_efc_abs)
+                # print(mng.SimTime, aircraft.Engines.fc_counter)
+                # print(mng.SimTime - aircraft.Engines.rul['EGTM']['TIME'][-1],
+                #       aircraft.Engines.fc_counter - aircraft.Engines.delete_esv_efc_abs)
 
                 # Add a maintenance event
                 maintenance_event = MaintenanceEvent(
@@ -493,11 +504,14 @@ def main():
                     workscope='EngineExchange',
                 )
 
+                # Detach engine from aircraft
+                engine4shop = aircraft.detach_engines(mng.SimTime)
+
                 # Perform the maintenance via the Engines class
-                aircraft.Engines.restore(mng.SimTime)
+                engine4shop.restore(mng.SimTime)
 
                 # Move the engine to the shop
-                mng.shop_engine_fleet.append(aircraft.Engines)
+                mng.shop_engine_fleet.append(engine4shop)
 
                 # Replace the engine with a spare, creating a new one if necessary
                 try:
@@ -507,8 +521,8 @@ def main():
                     logging.info(f"Need {mng.num_needed_spares} spare engines.")
                     spare_engine = Engines(uid=1000 + mng.num_needed_spares, config=mng.config)
 
-                aircraft.attach_engines(spare_engine)
-                spare_engine.attach_aircraft(aircraft)
+                aircraft.attach_engines(spare_engine, mng.SimTime)
+                # spare_engine.attach_aircraft(aircraft)
                 aircraft.add_event(maintenance_event)
 
         # Simulate a Turnaround Event
@@ -518,7 +532,7 @@ def main():
             t_beg=aircraft.last_tstamp,
             t_dur=dt.timedelta(hours=tat_hrs)
         )
-        aircraft.event_calendar.append(tat)
+        aircraft.add_event(tat)
         aircraft.last_tstamp = tat.t_end
 
         # Simulate a Flight Event
