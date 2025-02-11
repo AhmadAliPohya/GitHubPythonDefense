@@ -1,55 +1,93 @@
 Configuration Parameters:
 [Simulation]
 initial_time: 2025-01-01 09:00:00
-sim_duration: 20
+sim_duration: 25
 random_seed: 42
-maint_strategy: conventional
-predict_rul: (2030, 1)
+maint_strategy: phm_case2
+predict_rul: (2037, 1)
+random_failure: false
 
 [Aircraft]
-num_aircraft: 15
-min_age: 0
-max_age: 0
-avg_fc_per_year: 1050
-std_fc_per_year: 150
-avg_fh_per_fc: 4.75
-std_fh_per_fc: 1.8
-avg_tat_hrs: 3
+num_aircraft: 23
+age_range: 0
+avg_tat_hrs: 24
 
 [Engine]
-spare_engine_ratio: 1.0
-llp_life_init: 17500
-egtm_init: 35
+llp_life_init: 7000
+egtm_init: 40
 egti: 3.5
 mtbf_yrs: 8
 
 [Other]
-mro_base: EWR
+mro_base: TEB
 ac_overwrite_uid: -1
 ac_overwrite_fhr: 3
 
 
 Global Parameters:
-Number of needed spares: 6
-Number of Aircraft on Ground (AOG) events: 7
-Total number of engine shop visits: 33
-Fleet average FC/year: 22427.67
-Fleet average FH/FC: 4.81
+Number of needed spares: 9
+Number of Aircraft on Ground (AOG) events: 0
+Total number of engine shop visits: 23
+Fleet average FC/year: 8063.96
+Fleet average FH/FC: 3.15
 
 Per-Aircraft Summary:
-Aircraft ID    AOG Events     Shop Visits    Avg FC/Year    Avg FH/FC      
-0              0              2              1122.77        4.81           
-1              1              3              1120.59        4.81           
-2              1              2              1121.62        4.81           
-3              1              2              1122.41        4.81           
-4              0              3              1118.66        4.83           
-5              0              2              1123.40        4.80           
-6              1              3              1120.28        4.82           
-7              0              2              1119.59        4.82           
-8              0              2              1121.76        4.81           
-9              1              2              1121.10        4.81           
-10             0              2              1120.90        4.82           
-11             0              2              1125.02        4.78           
-12             1              2              1121.45        4.81           
-13             1              2              1120.85        4.82           
-14             0              2              1120.74        4.82           
+Aircraft ID    ASK            Shop Visits    Avg FC/Year    Avg FH/FC      
+0              17770338.0     1              330.93         2.51           
+1              18932346.0     1              329.36         2.69           
+2              25289617.0     1              314.39         3.76           
+3              15746626.0     1              333.95         2.20           
+4              18898411.0     1              328.82         2.69           
+5              26367915.0     1              312.71         3.94           
+6              19169477.0     1              327.91         2.73           
+7              26414979.0     1              313.58         3.94           
+8              19145646.0     1              327.75         2.73           
+9              26225411.0     1              313.29         3.91           
+10             25301290.0     1              316.13         3.74           
+11             24788113.0     1              316.35         3.66           
+12             19270269.0     1              327.67         2.75           
+13             26509991.0     1              313.58         3.95           
+14             19301007.0     1              327.63         2.75           
+15             19061436.0     1              327.83         2.72           
+16             18886867.0     1              328.22         2.69           
+17             19070712.0     1              328.06         2.72           
+18             26162465.0     1              313.55         3.90           
+19             25676672.0     1              314.63         3.81           
+20             26258747.0     1              314.13         3.91           
+21             17477267.0     1              331.42         2.46           
+22             18932560.0     1              327.48         2.70           
+
+Per-Engine Summary:
+Engine ID      Lost LLP life  Lost EGTM °C   
+1              1209.0         5.445000000001305
+14             1307.0         5.935000000001295
+1006           0              0              
+8              1270.0         5.7500000000012985
+17             1440.0         6.60000000000128
+1009           0              0              
+15             1469.0         6.745000000001277
+10             1119.0         4.995000000001315
+12             1324.0         6.020000000001293
+1007           0              0              
+3              1119.0         4.995000000001315
+0              1119.0         4.995000000001315
+4              1371.0         6.255000000001288
+1005           0              0              
+16             1354.0         6.17000000000129
+1001           0              0              
+6              1406.0         6.430000000001284
+1002           0              0              
+1008           0              0              
+1004           0              0              
+21             1119.0         4.995000000001315
+22             1242.0         5.6100000000013015
+1003           0              0              
+11             1119.0         4.995000000001315
+19             1119.0         4.995000000001315
+7              1119.0         4.995000000001315
+9              1119.0         4.995000000001315
+20             1119.0         4.995000000001315
+2              1119.0         4.995000000001315
+5              1119.0         4.995000000001315
+13             1119.0         4.995000000001315
+18             1119.0         4.995000000001315

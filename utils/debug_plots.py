@@ -92,7 +92,7 @@ def plot_esv_gantt_with_overlaps(time_bounds, overlapping_groups, save_as_html=F
         print("Chart saved as %s" % filename)
 
 
-def visualize_gantt_with_scope_and_windows(time_bounds, windows, scope_start, scope_end):
+def visualize_gantt_with_scope_and_windows(time_bounds, windows, scope_start, scope_end, mng=None):
     """
     Visualizes the merged ESV time bounds, scope, and opportunity windows using a Gantt chart.
 
@@ -139,6 +139,11 @@ def visualize_gantt_with_scope_and_windows(time_bounds, windows, scope_start, sc
     # Convert the data into a DataFrame for Plotly
     df = pd.DataFrame(gantt_data)
 
+    if mng is None:
+        title="Engine Shop Visit (ESV) Schedule, Scope, and Opportunity Windows"
+    else:
+        title=str(mng.SimTime)
+
     # Create the Gantt chart
     fig = px.timeline(
         df,
@@ -146,7 +151,7 @@ def visualize_gantt_with_scope_and_windows(time_bounds, windows, scope_start, sc
         x_end="End",
         y="UID",
         color="Event",  # Different colors for ESVs, windows, and scope
-        title="Engine Shop Visit (ESV) Schedule, Scope, and Opportunity Windows",
+        title=title,
         labels={"UID": "Engine/Gap", "Event": "Event Type"},
     )
 

@@ -1,13 +1,16 @@
 import logging
 import configparser as cp
-from classes.aircraft import Aircraft, Engines
+from classes.aircraft import Aircraft
+from classes.engines import Engines
 import classes.tailassignment as tap
+from classes.prediction import PrognosticManager
 import classes.prediction as pred
 from classes.events import FlightEvent, TurnaroundEvent, MaintenanceEvent
 import numpy as np
 import datetime as dt
 from post import post
 from utils.debug_plots import *
+import os, csv
 
 # Configure logging to write debug and above to a file called log.txt
 logging.basicConfig(
@@ -17,6 +20,17 @@ logging.basicConfig(
     format='%(asctime)s [%(levelname)s]: %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'  # Only display to the nearest second
 )
+
+# Add a StreamHandler to also print log messages to the console
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)  # Adjust level if needed
+console_handler.setFormatter(logging.Formatter(
+    '%(asctime)s [%(levelname)s]: %(message)s',  # Match file format
+    datefmt='%Y-%m-%d %H:%M:%S'
+))
+
+# Get the root logger and add the console handler
+logging.getLogger().addHandler(console_handler)
 
 
 class SimulationManager:
@@ -37,7 +51,7 @@ class SimulationManager:
         self.event_calendar = None
         self.config = None
         self._mro_base = None
-        self.aircrafts = []
+        self.aircraft_active = []
         self.engines_in_shop = []
         self.engines_in_pool = []
         self.yemo = []
@@ -53,18 +67,18 @@ class SimulationManager:
 
         # Initialize settings
         self._mro_base = self.config.get('Other', 'mro_base')
-        if self.config.get('Simulation', 'maint_strategy') == 'predictive':
-            self.predictive = True
+        self.predictive = self.config.get('Simulation', 'maint_strategy')
+        if self.predictive in ['conventional', 'phm_case1']:
+            self.tap_threshold = 1.
         else:
-            self.predictive = False
+            self.tap_threshold = 0.25
 
         # Create aircraft fleet
         num_aircraft = self.config.getint('Aircraft', 'num_aircraft')
-        self.aircrafts = self.create_aircraft_fleet(num_aircraft)
-        self.no_aircraft = len(self.aircrafts)
+        self.aircraft_active, self.aircraft_inactive = self.create_aircraft_fleet(num_aircraft)
 
         # Create and attach engine sets to aircraft
-        self.create_and_attach_engines(num_aircraft, self.aircrafts)
+        self.create_and_attach_engines()
 
         # Store some constant values for easier access
         self._avg_tat_hrs = self.config.getfloat('Aircraft', 'avg_tat_hrs')
@@ -102,9 +116,20 @@ class SimulationManager:
         """
         aircraft_fleet = [Aircraft(uid=n, config=self.config) for n in range(num_aircraft)]
         logging.info("Created %d aircraft" % num_aircraft)
-        return aircraft_fleet
 
-    def create_and_attach_engines(self, num_aircraft: int, aircraft_fleet: list) -> list:
+        active_aircraft = []
+        inactive_aircraft = []
+        for idx, aircraft in enumerate(aircraft_fleet):
+            if idx == 0:
+                aircraft.set_entries_into_service(first=True)
+            if aircraft.eis <= self.SimTime:
+                active_aircraft.append(aircraft)
+            else:
+                inactive_aircraft.append(aircraft)
+
+        return active_aircraft, inactive_aircraft
+
+    def create_and_attach_engines(self) -> list:
         """
         Creates engine sets, assigns them to aircraft, and returns the engine fleet.
 
@@ -120,37 +145,33 @@ class SimulationManager:
         list of Engines
             List of created engine objects.
         """
-        engine_fleet = []
-        for n in range(num_aircraft):
-            engines = Engines(uid=n, config=self.config, aircraft=aircraft_fleet[n])
-            aircraft_fleet[n].attach_engines(engines, self.SimTime)
-            #engines.attach_aircraft(aircrafts[n])
-            engine_fleet.append(engines)
-        logging.info("Created and attached %d engine sets" % len(engine_fleet))
-        return engine_fleet
 
-    def create_spare_engines(self, num_aircraft: int, spare_engine_ratio: float) -> list:
-        """
-        Creates a fleet of spare engines.
+        n = 0
+        for aircraft in self.aircraft_active:
+            engines = Engines(uid=n, config=self.config, aircraft=aircraft)
+            engines.aircraft = aircraft
+            aircraft.Engines = engines
+            n += 1
 
-        Parameters
-        ----------
-        num_aircraft : int
-            Number of aircraft in the fleet.
-        spare_engine_ratio : float
-            Ratio of spare engines to aircraft.
+        for aircraft in self.aircraft_inactive:
+            engines = Engines(uid=n, config=self.config, aircraft=aircraft)
+            engines.aircraft = aircraft
+            aircraft.Engines = engines
+            n += 1
 
-        Returns
-        -------
-        list of Engines
-            List of created spare engine objects.
-        """
-        num_spare_engines = int(np.ceil(spare_engine_ratio * num_aircraft))
-        spare_engine_fleet = [
-            Engines(uid=num_aircraft + n, config=self.config) for n in range(num_spare_engines)
-        ]
-        logging.info("Created %d spare engine sets" % len(spare_engine_fleet))
-        return spare_engine_fleet
+
+    def next_aircraft_in_line(self):
+
+        idx_earliest = 0
+        tstamp = self.aircraft_active[0].last_tstamp
+        for idx_loop, aircraft_loop in enumerate(self.aircraft_active):
+            tstamp_loop = aircraft_loop.last_tstamp
+            if tstamp_loop < tstamp:
+                tstamp = tstamp_loop
+                idx_earliest = idx_loop
+
+        return self.aircraft_active[idx_earliest], idx_earliest
+
 
     def _calculate_scope(self, efc):
         """
@@ -168,10 +189,9 @@ class SimulationManager:
             possible times for the ESV.
         """
 
-        # todo save avg tat somewhere
-        # todo IN PREDICTION redefine the scope after a "flag" (change of goal fh/fc ratio)
-
+        # scope is defined by FH/FC ratio
         # 6 FH/FC for delay (longer flights) and 2 FH/FC for early (shorter flights)
+        # todo IN PREDICTION redefine the scope after a "flag" (change of goal fh/fc ratio)
         lower_bound = self.SimTime + efc * (dt.timedelta(hours=2) + self._avg_tat_td)
         upper_bound = self.SimTime + efc * (dt.timedelta(hours=6) + self._avg_tat_td)
 
@@ -237,7 +257,7 @@ class SimulationManager:
             gap_end = min(gap_end, scope_end)
 
             # Add the gap if it meets the minimum duration
-            if gap_start < gap_end and (gap_end - gap_start).days >= 35:  # Check if at least 5 weeks
+            if gap_start < gap_end and (gap_end - gap_start).days >= 77:  # Check if at least 5 weeks
                 windows.append((gap_start, gap_end))
 
         # Handle the gap after the last ESV
@@ -246,7 +266,7 @@ class SimulationManager:
             if scope_end > last_bound_end:
                 post_gap_start = last_bound_end
                 post_gap_end = scope_end
-                if (post_gap_end - post_gap_start).days >= 35:  # Check if at least 5 weeks
+                if (post_gap_end - post_gap_start).days >= 77:  # Check if at least 5 weeks
                     windows.append((post_gap_start, post_gap_end))
 
         return windows
@@ -290,6 +310,111 @@ class SimulationManager:
             for uid, time in zip(esv_plan['UID'], esv_plan['TIME'])
         ]
 
+    def adjust_engine_shop_visits(self):
+
+        if self.predictive != 'phm_case1':
+            return
+
+        # Plan structure to store ESV data
+        esv_plan = {'UID': [], 'OBJs': [], 'TIME': [], 'TIMEmin': [], 'TIMEmax': []}
+
+        overlap_potential = -1
+        # Step 2: Populate the ESV plan for each aircraft with available RUL data
+        for aircraft in self.aircraft_active:
+            engine = aircraft.Engines
+
+            has_prediction = hasattr(engine, 'next_esv')
+            if has_prediction:
+                is_close = (engine.next_esv['BOUNDS'][0] - self.SimTime) < dt.timedelta(days=6 * 30)
+                if is_close:
+                    # only add if the next RUL is within the next 6 months
+                    esv_plan['UID'].append(engine.uid)  # Add engine UID
+                    esv_plan['TIME'].append(engine.next_esv['TIME'])  # Add ESV time
+                    esv_plan['TIMEmin'].append(engine.next_esv['BOUNDS'][0]),
+                    esv_plan['TIMEmax'].append(engine.next_esv['BOUNDS'][1]),
+                    esv_plan['OBJs'].append(engine)
+                    overlap_potential += 1
+
+        if overlap_potential <= 0:  # less than two engines in there
+            return
+
+
+        self._time_bounds = []
+        for uid in esv_plan['UID']:
+            index = esv_plan['UID'].index(uid)
+            timebounddict = {
+                'UID': uid,
+                'START': esv_plan['TIMEmin'][index],
+                'END': esv_plan['TIMEmax'][index] + dt.timedelta(days=25),
+            }
+            if esv_plan['OBJs'][index].next_scheduled_esv is not None:
+                timebounddict = esv_plan['OBJs'][index].time_bounds
+            self._time_bounds.append(timebounddict)
+
+
+        overlapping_groups = self._find_overlaps()
+
+        while len(overlapping_groups) > 0:
+
+            for group in overlapping_groups:
+
+                no_opp_windows_found = 0
+
+                for uid in group:
+
+                    index = esv_plan['UID'].index(uid)
+
+                    if esv_plan['OBJs'][index].next_scheduled_esv is not None:
+                        no_opp_windows_found += 1
+                        continue
+
+                    scope_start = self.SimTime
+                    scope_end = esv_plan['TIMEmax'][index]
+
+                    opportunity_windows = self._find_opportunity_windows(scope_start, scope_end)
+                    # If no opportunity windows exist within the scope, skip this engine
+                    if not opportunity_windows:
+                        no_opp_windows_found += 1
+                        continue
+                    opportunity_windows = sorted(opportunity_windows, key=lambda x: x[0])
+
+                    selected_window = opportunity_windows[-1]
+                    target_time = selected_window[1] - dt.timedelta(days=7+25)
+
+                    #visualize_gantt_with_scope_and_windows(
+                    #    self._time_bounds, opportunity_windows, scope_start, scope_end, self)
+
+                    esv_plan['OBJs'][index].next_scheduled_esv = target_time
+                    esv_plan['OBJs'][index].time_bounds = {'UID': uid, 'START': target_time, 'END': target_time + dt.timedelta(days=25)}
+                    esv_plan['TIMEmin'][index] = target_time
+                    esv_plan['TIMEmax'][index] = target_time
+
+                    self._time_bounds = []
+                    for uid in esv_plan['UID']:
+                        index = esv_plan['UID'].index(uid)
+                        timebounddict = {
+                            'UID': uid,
+                            'START': esv_plan['TIMEmin'][index],
+                            'END': esv_plan['TIMEmax'][index] + dt.timedelta(days=25),
+                        }
+                        if esv_plan['OBJs'][index].next_scheduled_esv is not None:
+                            timebounddict = esv_plan['OBJs'][index].time_bounds
+                        self._time_bounds.append(timebounddict)
+
+                    # visualize_gantt_with_scope_and_windows(
+                    #     self._time_bounds, opportunity_windows, scope_start, scope_end, self)
+
+                    print("Setting ESV of %d to %s" % (uid, str(target_time)))
+
+                    break
+
+            if no_opp_windows_found == len(group):
+                break
+            overlapping_groups = self._find_overlaps()
+
+
+
+
     def adjust_engines_target_ratio(self):
         """
         Updates the ESV (Engine Shop Visit) plans for all aircraft in the fleet,
@@ -301,11 +426,11 @@ class SimulationManager:
 
         overwrite_uid = self.config.getint('Other', 'ac_overwrite_uid')
         if overwrite_uid >= 0:
-            ac_index = next((i for i, obj in enumerate(self.aircrafts) if obj.uid == overwrite_uid))
-            self.aircrafts[ac_index].goal_fh_fc_ratio = self.config.getfloat('Other', 'ac_overwrite_fhr')
+            ac_index = next((i for i, obj in enumerate(self.aircraft_active) if obj.uid == overwrite_uid))
+            self.aircraft_active[ac_index].goal_fh_fc_ratio = self.config.getfloat('Other', 'ac_overwrite_fhr')
             return
 
-        if not self.predictive:
+        if not self.predictive == 'phm_case2':
             return
 
         # Log the adjustment details
@@ -313,12 +438,12 @@ class SimulationManager:
                      % self.SimTime.strftime("%Y-%m-%d %H:%M:%S"))
 
         # Step 1: Initialize variables
-        n_aircraft = len(self.aircrafts)  # Total number of aircraft in the fleet
+        n_aircraft = len(self.aircraft_active)  # Total number of aircraft in the fleet
         rul_available = 0  # Counter for aircraft with Remaining Useful Life (RUL) available
         esv_plan = {'UID': [], 'OBJs': [], 'TIME': [], 'EFCs': []}  # Plan structure to store ESV data
 
         # Step 2: Populate the ESV plan for each aircraft with available RUL data
-        for aircraft in self.aircrafts:
+        for aircraft in self.aircraft_active:
             engine = aircraft.Engines
             if hasattr(engine, 'next_esv'):  # Check if the engine has a defined next ESV
                 rul_available += 1
@@ -328,6 +453,7 @@ class SimulationManager:
                 esv_plan['OBJs'].append(engine)
 
         # If not all aircraft have available RUL data, exit early
+        # todo change this!
         if rul_available < n_aircraft:
             return
 
@@ -356,7 +482,8 @@ class SimulationManager:
                     time = esv_plan['TIME'][index]
 
                     # Calculate the scope and store it
-                    scopes[uid] = self._calculate_scope(efc, time)
+                    #scopes[uid] = self._calculate_scope(efc, time)
+                    scopes[uid] = self._calculate_scope(efc)
 
                 no_opp_windows_found = 0
 
@@ -405,17 +532,7 @@ class SimulationManager:
 
         return
 
-    def next_aircraft_in_line(self):
 
-        idx_earliest = 0
-        tstamp = self.aircrafts[0].last_tstamp
-        for idx_loop, aircraft_loop in enumerate(self.aircrafts):
-            tstamp_loop = aircraft_loop.last_tstamp
-            if tstamp_loop < tstamp:
-                tstamp = tstamp_loop
-                idx_earliest = idx_loop
-
-        return self.aircrafts[idx_earliest], idx_earliest
 
 
 def main():
@@ -423,6 +540,9 @@ def main():
     Main function to initialize and run the simulation.
     """
     mng = SimulationManager(config_path='config.ini')
+    prog_mng = PrognosticManager(mng)
+    for aircraft in mng.aircraft_active:
+        prog_mng.add_engine_esv_plan(aircraft.Engines)
 
     # Perform initial tail assignment
     mng = tap.initial(mng)
@@ -435,58 +555,15 @@ def main():
     while True:
 
         # Find the next aircraft to process
-        #idx_aircraft = next_aircraft_in_line(mng.aircrafts)
-        #aircraft = mng.aircrafts[idx_aircraft]
+        #idx_aircraft = next_aircraft_in_line(mng.aircraft_active)
+        #aircraft = mng.aircraft_active[idx_aircraft]
 
         aircraft, _ = mng.next_aircraft_in_line()
 
         # Check for engine maintenance needs
-        if aircraft.Engines.maintenance_due():
+        if aircraft.Engines.maintenance_due(mng):
 
             skip_maintenance = False
-
-            if aircraft.location != mng._mro_base:
-
-                # here it matters what the ESV driver is.
-                # If a random failure occurred, the engine is not operable.
-                # This means that the airline either has to try to send another
-                # aircraft or distribute passengers and whatnot - or - we just
-                # cancel this flight. Either way, the aircraft/engine will stay
-                # "grounded" for 24 hours. Think of this as the waiting time until
-                # the spare engines come in by freighter.
-
-                if aircraft.Engines.critical_soh_due and not aircraft.Engines.predictive:
-
-                    downtime_event = MaintenanceEvent(
-                        location=aircraft.location,
-                        t_beg=aircraft.last_tstamp,
-                        t_dur=dt.timedelta(hours=24),
-                        workscope='AircraftOnGround',
-                    )
-
-                    aircraft.add_event(downtime_event)
-                    aircraft.aog_events += 1
-                    mng.aog_events += 1
-
-                else:
-
-                    # Here, we just schedule the maintenance to the next time
-                    # when the aircraft is at its MRO base. Because the MRO
-                    # base is the most likely the most frequent travelled
-                    # airport, it'll be visited within the timeframe anyways
-                    # without our need for intervention
-
-                    if mng._mro_base in [el['dest'] for el in aircraft.next_flights]:
-
-                        skip_maintenance = True
-
-                    else:
-
-                        # Just do maintenance there (assumption, otherwise I'd
-                        # have to recall the reschedule thing and have it
-                        # choose the base with higher priority - this complexity
-                        # is not worth it).
-                        skip_maintenance = False
 
             if not skip_maintenance:
 
@@ -505,6 +582,20 @@ def main():
                     workscope='EngineExchange',
                 )
 
+                # if aircraft.Engines.uid < 999:
+                #     x_time = aircraft.Engines.history['TIME'][-100:]
+                #     y_egtm = aircraft.Engines.history['EGTM'][-100:]
+                #     x_time_num = [(el - x_time[0]).total_seconds() / (3600 * 24) for el in x_time]
+                #     a, b = np.polyfit(x_time_num, y_egtm, 1)
+                #
+                #     # Append data to CSV file
+                #     with open(csv_filename, mode="a", newline="") as file:
+                #         writer = csv.writer(file)
+                #         writer.writerow([aircraft.Engines.uid, aircraft.Engines.goal_fh_fc_ratio, a, b])
+
+
+
+
                 # Detach engine from aircraft
                 engine4shop = aircraft.detach_engines(mng.SimTime)
 
@@ -521,10 +612,13 @@ def main():
                     mng.num_needed_spares += 1
                     logging.info(f"Need {mng.num_needed_spares} spare engines.")
                     spare_engine = Engines(uid=1000 + mng.num_needed_spares, config=mng.config)
+                    prog_mng.add_engine_esv_plan(spare_engine)
 
                 aircraft.attach_engines(spare_engine, mng.SimTime)
                 # spare_engine.attach_aircraft(aircraft)
                 aircraft.add_event(maintenance_event)
+
+
 
         # Simulate a Turnaround Event
         tat_hrs = np.random.uniform(low=aircraft.avg_tat_hrs_min, high=aircraft.avg_tat_hrs_max)
@@ -548,17 +642,33 @@ def main():
         yemo = (mng.SimTime.year, mng.SimTime.month)
         if yemo not in mng.yemo:
 
+            yemo_dt = dt.datetime(year=yemo[0], month=yemo[1], day=1)
+
+            new_aircraft_added = False
+            for aircraft in mng.aircraft_inactive[:]:
+                if yemo_dt >= aircraft.eis:
+                    mng.aircraft_active.append(aircraft)
+                    mng.aircraft_inactive.remove(aircraft)
+                    new_aircraft_added = True
+
+            if new_aircraft_added:
+                mng = tap.initial(mng)
+
             if predict_rul_frequency == 'monthly':
-                mng = pred.predict_rul(mng)
-                mng.adjust_engines_target_ratio()
+                prog_mng.predict_rul()
+                prog_mng.fix_esv_planning_with_fhratio()
+                prog_mng.fix_esv_planning()
             elif predict_rul_frequency == 'annually':
                 if yemo[0] not in [el[0] for el in mng.yemo]:
-                    mng = pred.predict_rul(mng)
-                    mng.adjust_engines_target_ratio()
+                    prog_mng.predict_rul()
+                    prog_mng.fix_esv_planning_with_fhratio()
+                    prog_mng.fix_esv_planning()
+
             else:
                 if str(yemo) == predict_rul_frequency:
-                    mng = pred.predict_rul(mng)
-                    mng.adjust_engines_target_ratio()
+                    prog_mng.predict_rul()
+                    prog_mng.fix_esv_planning_with_fhratio()
+                    prog_mng.fix_esv_planning()
 
             # print("rescheduling on %s" % str(mng.SimTime))
             mng = tap.reschedule(mng)
@@ -576,6 +686,12 @@ def main():
 
 
 if __name__ == "__main__":
+    # csv_filename = "simulation_results.csv"
+    # headers = ['Engine UID', 'FH/FC-Ratio', 'a', 'b']
+    # with open(csv_filename, mode="w", newline="") as file:
+    #     writer = csv.writer(file)
+    #     writer.writerow(headers)
+
     manager = main()
     post.visualize_health(manager)
     post.minimal_report(manager)

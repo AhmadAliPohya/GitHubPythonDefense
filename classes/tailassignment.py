@@ -10,14 +10,18 @@ class AssignmentManager:
     def __init__(self):
 
         # Read flight data from a CSV file into a pandas DataFrame
-        data = pd.read_csv('data\\data.csv')
+        data = pd.read_csv('data\\flight_schedule.csv')
+
+
+        data['FREQ'] = data['FREQ']/np.sum(data['FREQ'])
         self.data = data
 
         # Calculate various statistics using weighted averages based on 'FREQ' column
         self.stats = {
             'avg_dist': np.average(data['DIST'], weights=data['FREQ']),
             'avg_fh': np.average(data['TIME'], weights=data['FREQ']),
-            'avg_fc/a': 6011.2 / np.average(data['TIME'], weights=data['FREQ']),
+            #'avg_fc/a': 6011.2 / np.average(data['TIME'], weights=data['FREQ']),
+            'avg_fc/a': 315
         }
         # Average flight cycles per week
         self.stats['avg_fc/week'] = self.stats['avg_fc/a'] / 52
@@ -52,7 +56,7 @@ class AssignmentManager:
     def create_flights2assign(self, mng):
 
         # Calculate the total number of flights to assign based on fleet size and average flight cycles per week
-        num_flights2assign = int(len(mng.aircrafts) * 8 * self.stats['avg_fc/week'])
+        num_flights2assign = int(len(mng.aircraft_active) * 8 * self.stats['avg_fc/week'])
 
         flights2assign_npstr = list(
             np.random.choice(
@@ -81,12 +85,12 @@ def initial(mng):
     assigned_airports = list(
         np.random.choice(
             asmng.data["ORIG"],
-            size=len(mng.aircrafts),
+            size=len(mng.aircraft_active),
             p=asmng.data["FREQ"]
         )
     )
 
-    for idx, aircraft in enumerate(mng.aircrafts):
+    for idx, aircraft in enumerate(mng.aircraft_active):
         aircraft.location = assigned_airports[idx]
         aircraft.goal_fh_fc_ratio = asmng.stats['avg_fh']
         aircraft.next_flights.append({'dest': assigned_airports[idx],
@@ -103,7 +107,7 @@ def initial(mng):
 
         availables_list = [
             (ac, ac.scheduled_until)
-            for ac in mng.aircrafts
+            for ac in mng.aircraft_active
             if ac.next_flights[-1]['dest'] == selected_flight['orig']]
 
         if availables_list:
@@ -116,7 +120,7 @@ def initial(mng):
             flights2assign[selected_flight_str] -= 1
             remaining_flights -= 1
 
-    for idx, aircraft in enumerate(mng.aircrafts):
+    for idx, aircraft in enumerate(mng.aircraft_active):
 
         del aircraft.next_flights[0]
         first_flight_params = aircraft.next_flights.pop(0)
@@ -137,20 +141,20 @@ def initial(mng):
 
 def reschedule(mng):
 
-    logging.info("(%s) | Rescheduling Flights to Aircraft"
+    logging.debug("(%s) | Rescheduling Flights to Aircraft"
                  % mng.SimTime.strftime("%Y-%m-%d %H:%M:%S"))
 
     flights2assign = asmng.create_flights2assign(mng)
     num_flights2assign = sum(flights2assign.values())
     remaining_flights = num_flights2assign
 
-    for aircraft in mng.aircrafts:
+    for aircraft in mng.aircraft_active:
         aircraft.next_flights = [aircraft.next_flights[0]]
         aircraft.scheduled_until = aircraft.next_flights[-1]['t_dur']
 
     while remaining_flights > 0:
 
-        for aircraft in mng.aircrafts:
+        for aircraft in mng.aircraft_active:
             location = aircraft.next_flights[-1]['dest']
             compatible_flightnames_all = asmng.compatible_flights[location]
 
@@ -168,10 +172,12 @@ def reschedule(mng):
                 selected_flight_str = np.random.choice(compatible_flightnames_all)
             else:
 
-                if np.random.random() >= 0.25:
+                if np.random.random() >= mng.tap_threshold:
+                    # assign flights so that the deviation is smallest
                     min_dev_idx = np.argmin(devs)
                     selected_flight_str = compatible_flightnames_filtered[min_dev_idx]
                 else:
+                    # just randomly assign a flight
                     selected_flight_str = np.random.choice(compatible_flightnames_filtered)
 
             selected_flight = asmng.fevent_params[selected_flight_str]

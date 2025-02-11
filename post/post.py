@@ -5,7 +5,7 @@ import plotly.express as px
 
 def visualize_health(mng):
     # Extract all engines from the management object
-    active_engines = [Aircraft.Engines for Aircraft in mng.aircrafts]
+    active_engines = [Aircraft.Engines for Aircraft in mng.aircraft_active]
     shop_engines = mng.engines_in_shop
     spare_engines = mng.engines_in_pool
 
@@ -20,12 +20,12 @@ def visualize_health(mng):
     engine_colors = {engine.uid: colors[i % len(colors)] for i, engine in enumerate(engine_fleet)}
 
     # Define rows and columns
-    metrics = ['EGTM', 'LLP', 'SOH']  # Rows
+    metrics = ['EGTM', 'LLP'] #, 'SOH']  # Rows
     dimensions = ['TIME', 'EFCs', 'EFHs']  # Columns
 
     # Create a 3x3 subplot grid with shared x and y axes
     fig = make_subplots(
-        rows=3, cols=3,
+        rows=2, cols=3,
         shared_xaxes=True,
         shared_yaxes=True,
         horizontal_spacing=0.02,  # Reduced horizontal spacing
@@ -50,7 +50,7 @@ def visualize_health(mng):
         y_data = {
             'EGTM': history['EGTM'],
             'LLP': history['LLP'],
-            'SOH': history['SOH']
+            # 'SOH': history['SOH']
         }
 
         color = engine_colors[engine.uid]
@@ -111,7 +111,7 @@ def visualize_health(mng):
 
 def postprocessingSOH(mng):
 
-    active_engines = [Aircraft.Engines for Aircraft in mng.aircrafts]
+    active_engines = [Aircraft.Engines for Aircraft in mng.aircraft_active]
     shop_engines = mng.engines_in_shop
     spare_engines = mng.engines_in_pool
 
@@ -202,19 +202,19 @@ def minimal_report(mng):
     report_lines.append("")
 
     # Second block: Global parameters
-    num_aircraft = len(mng.aircrafts)
+    num_aircraft = len(mng.aircraft_active)
 
     # Count all shop visits by looking for "EngineExchange" in event calendars
     total_shop_visits = sum(
-        1 for ac in mng.aircrafts for event in ac.event_calendar
+        1 for ac in mng.aircraft_active for event in ac.event_calendar
         if getattr(event, 'workscope', None) == "EngineExchange"
     )
 
     # Fleet averages
-    avg_fc_per_year = sum(ac.fc_counter for ac in mng.aircrafts) / num_aircraft
+    avg_fc_per_year = sum(ac.fc_counter for ac in mng.aircraft_active) / num_aircraft
     avg_fh_per_fc = (
-            sum(ac.fh_counter.total_seconds() / 3600 for ac in mng.aircrafts) /
-            sum(ac.fc_counter for ac in mng.aircrafts)
+            sum(ac.fh_counter.total_seconds() / 3600 for ac in mng.aircraft_active) /
+            sum(ac.fc_counter for ac in mng.aircraft_active)
     )
 
     report_lines.append("Global Parameters:")
@@ -227,10 +227,13 @@ def minimal_report(mng):
 
     # Third block: Per-aircraft summary
     report_lines.append("Per-Aircraft Summary:")
-    report_lines.append(f"{'Aircraft ID':<15}{'AOG Events':<15}{'Shop Visits':<15}"
+    report_lines.append(f"{'Aircraft ID':<15}{'ASK':<15}{'Shop Visits':<15}"
                         f"{'Avg FC/Year':<15}{'Avg FH/FC':<15}")
 
-    for ac in mng.aircrafts:
+    total_ask = 0
+
+
+    for ac in mng.aircraft_active:
         # Count shop visits for this aircraft
         shop_visits = sum(
             1 for event in ac.event_calendar
@@ -241,12 +244,47 @@ def minimal_report(mng):
         avg_fc_per_year = ac.fc_counter / (ac.age.total_seconds() / (3600 * 24 * 365))
         avg_fh_per_fc = ac.fh_counter.total_seconds() / (3600 * ac.fc_counter)
 
-        report_lines.append(f"{ac.uid:<15}{ac.aog_events:<15}{shop_visits:<15}"
+        ask = round(sum([el.dist for el in ac.event_calendar if el.type == 'Flight']),0)
+
+        total_ask += ask
+
+
+        report_lines.append(f"{ac.uid:<15}{ask:<15}{shop_visits:<15}"
                             f"{avg_fc_per_year:<15.2f}{avg_fh_per_fc:<15.2f}")
+
+    report_lines.append("")
+    report_lines.append("Per-Engine Summary:")
+    report_lines.append(f"{'Engine ID':<15}{'Lost LLP life':<15}{'Lost EGTM °C':<15}")
+
+    engines = []
+    for ac in mng.aircraft_active:
+        engines.append(ac.Engines)
+    for engine in mng.engines_in_pool:
+        engines.append(engine)
+    for engine in mng.engines_in_shop:
+        engines.append(engine)
+
+    total_llp_lost = 0
+    total_egtm_lost = 0
+
+    for eng in engines:
+
+        total_llp_lost += eng.llp_rul_lost
+        total_egtm_lost += eng.egtm_lost
+
+        report_lines.append(f"{eng.uid:<15}{eng.llp_rul_lost:<15}{eng.egtm_lost:<15}")
+
+
 
     # Output report to console
     for line in report_lines:
         print(line)
+
+    print("\n")
+    print("Total ASK: %.0f" % total_ask)
+    print("Total LLP lost: %.0f" % total_llp_lost)
+    print("Total EGTM lost: %.0f" % total_egtm_lost)
+
 
     # Save report to a .txt file
     with open("minimal_report.txt", "w") as file:
