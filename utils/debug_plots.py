@@ -1,6 +1,12 @@
 import plotly.figure_factory as ff
 import plotly.express as px
 import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import pandas as pd
+import datetime as dt
+import plotly.figure_factory as ff
+import plotly.offline as pyo
 
 def plot_esv_gantt(time_bounds):
     """
@@ -36,6 +42,53 @@ def plot_esv_gantt(time_bounds):
 
     # Render the chart in the browser
     fig.show()
+
+
+def visualize_opportunity_windows(opp_windows, mro_windows, scopes, esv_plan, eng_uid, chosen_windows=None):
+    # Convert datetime values to strings for visualization
+    df = []
+    # Define scope boundaries for visualization
+    scope_start, scope_end = scopes
+    # Add MRO windows
+    for start, end in mro_windows:
+        df.append(dict(Task='Maintenance Windows', Start=max(start, scope_start), Finish=min(end, scope_end),
+                       Resource='MRO Window'))
+    # Add opportunity windows
+    for start, end in opp_windows:
+        df.append(dict(Task='Opportunity Windows', Start=max(start, scope_start), Finish=min(end, scope_end),
+                       Resource='Opportunity'))
+    # Add chosen MRO window if provided
+    if chosen_windows:
+        if isinstance(chosen_windows, list):
+            for start, end in chosen_windows:
+                df.append(dict(Task=f'MRO {eng_uid}', Start=start,
+                               Finish=end, Resource='Chosen MRO'))
+        else:
+
+            df.append(dict(Task=f'MRO {eng_uid}', Start=chosen_windows[0],
+                           Finish=chosen_windows[1], Resource='Chosen MRO'))
+    # Add ESV plan times for all engines within the scope
+    for engine_id, engine_plan in esv_plan.iterrows():
+        df.append(dict(Task=f'ESV Plan {engine_id}', Start=engine_plan['TP_MIN'],
+                       Finish=engine_plan['TP_MAX'], Resource='Predicted Maintenance'))
+        df.append(dict(Task=f'ESV Plan {engine_id}', Start=engine_plan['TP_EST'],
+                       Finish=engine_plan['T_END'],
+                       Resource='Maintenance Period'))
+    # Define colors for the different elements
+    colors = {
+        'Opportunity': 'rgb(220, 220, 220, 0.5)',
+        'MRO Window': 'rgb(135, 206, 250, 0.5)',
+        'Chosen MRO': 'rgb(255, 69, 0)',
+        'Predicted Maintenance': 'rgb(60, 179, 113)',
+        'Maintenance Period': 'rgb(255, 215, 0)'
+    }
+    # Create Gantt chart
+    fig = ff.create_gantt(df, colors=colors, index_col='Resource', show_colorbar=True, group_tasks=True)
+    # Show chart in browser
+    pyo.plot(fig, filename='maintenance_schedule.html', auto_open=True)
+
+# chosen_windows = [mro_windows[idx] for idx in list_chosen_mro_window_indices[lowest_dev_idx]]
+
 
 
 def plot_esv_gantt_with_overlaps(time_bounds, overlapping_groups, save_as_html=False, filename="esv_gantt_with_overlaps.html"):

@@ -284,6 +284,7 @@ def minimal_report(mng):
     print("Total ASK: %.0f" % total_ask)
     print("Total LLP lost: %.0f" % total_llp_lost)
     print("Total EGTM lost: %.0f" % total_egtm_lost)
+    print("Total No. of Ferry Flights: %d" % len(mng.ferry_flights))
 
 
     # Save report to a .txt file

@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 from scipy.stats import t
+from utils.debug_plots import *
 
 class PrognosticManager():
 
@@ -91,7 +92,8 @@ class PrognosticManager():
                     'OBJ': engine,
                     'DRIVER': 'LLPS'}
 
-            self.update_engine_esv_plan(engine)
+            if engine.next_scheduled_esv is None:
+                self.update_engine_esv_plan(engine)
 
 
     def _find_opp_windows(self, scope_beg, scope_end, esv_plan_df):
@@ -145,6 +147,8 @@ class PrognosticManager():
         # Reduce esv_plan dataframe to those entries which have TP_MIN
         filtered_esv_schedule = self.esv_schedule[self.esv_schedule['TP_MIN'].notna()]
 
+        # Additionally filter
+
         # Reduce further with only those that have a TP_MIN that is in less than a year
         filtered_esv_schedule = filtered_esv_schedule[(filtered_esv_schedule["TP_MIN"] >= now)
                                         & (filtered_esv_schedule["TP_MIN"] <= three_years_later)]
@@ -161,6 +165,7 @@ class PrognosticManager():
         # Find opportunity windows
         #filtered_esv_schedule = filtered_esv_schedule.sort_values(by='TP_MIN', ascending=True)
         opp_windows = self._find_opp_windows(scope_beg, scope_end, filtered_esv_schedule)
+        opp_windows = [(scope_beg, scope_end)]  # New!
 
         mro_windows = self._find_mro_windows(opp_windows)
 
@@ -184,6 +189,8 @@ class PrognosticManager():
             shuffled = np.random.permutation(mro_windows_indices)
             chosen_mro_window_indices = [int(shuffled[i % len(mro_windows)]) for i in range(n_engines2assign)]
             list_chosen_mro_window_indices.append(chosen_mro_window_indices)
+
+
 
             time_devs = []
 
@@ -210,12 +217,38 @@ class PrognosticManager():
             chosen_window = mro_windows[chosen_window_idx]
             new_time = chosen_window[0]
 
+            # visualize_opportunity_windows(
+            #     opp_windows, mro_windows, [scope_beg, scope_end],
+            #     self.esv_schedule, engine2assign.uid, chosen_window)
+
             self.esv_schedule.loc[engine2assign.uid, 'TP_MIN'] = new_time
             self.esv_schedule.loc[engine2assign.uid, 'TP_EST'] = new_time
             self.esv_schedule.loc[engine2assign.uid, 'TP_MAX'] = new_time + dt.timedelta(days=25)
             self.esv_schedule.loc[engine2assign.uid, 'T_END'] = new_time + dt.timedelta(days=25)
 
+            # visualize_opportunity_windows(
+            #     opp_windows, mro_windows, [scope_beg, scope_end],
+            #     self.esv_schedule, engine2assign.uid, chosen_window)
+
             engine2assign.next_scheduled_esv = new_time
+
+
+    def check_esv_plan_overlaps(self, esv_plan):
+        overlaps = False
+
+        # Sort the DataFrame by TP_MIN
+        esv_plan_sorted = esv_plan.sort_values(by="TP_MIN").reset_index()
+
+        for i in range(len(esv_plan_sorted) - 1):  # Prevent last row from checking beyond index
+            current_start, current_end = esv_plan_sorted.loc[i, "TP_MIN"], esv_plan_sorted.loc[i, "T_END"]
+
+            for j in range(i + 1, len(esv_plan_sorted)):
+                next_start, next_end = esv_plan_sorted.loc[j, "TP_MIN"], esv_plan_sorted.loc[j, "T_END"]
+
+                if next_start <= current_end:  # Overlap condition
+                    overlaps = True
+
+        return overlaps
 
     def fix_esv_planning_with_fhratio(self):
 
@@ -274,6 +307,7 @@ class PrognosticManager():
         # Find opportunity windows
         # filtered_esv_schedule = filtered_esv_schedule.sort_values(by='TP_MIN', ascending=True)
         opp_windows = self._find_opp_windows(scope_beg, scope_end, filtered_esv_schedule)
+        opp_windows = [(scope_beg, scope_end)]
 
         mro_windows = self._find_mro_windows(opp_windows)
 
@@ -322,9 +356,20 @@ class PrognosticManager():
 
         lowest_dev_idx = np.argmin(list_deviations)
         for idx, engine2assign in enumerate(engines2assign):
+
+            current_beg = self.esv_schedule.loc[engine2assign.uid, 'TP_MIN']
+            current_end = self.esv_schedule.loc[engine2assign.uid, 'T_END']
+
+            if ((self.esv_schedule['TP_MIN'] < current_end) & (self.esv_schedule['T_END'] > current_beg)).any() == False:
+                # this engine does not have an overlap
+                continue
+
             chosen_window_idx = list_chosen_mro_window_indices[lowest_dev_idx][idx]
             chosen_window = mro_windows[chosen_window_idx]
             new_time = chosen_window[0]
+
+            # visualize_opportunity_windows(opp_windows, mro_windows, [scope_beg, scope_end], self.esv_schedule,
+            #                               engine2assign.uid, chosen_window)
 
             # f(x) = a*x + b
             # x is in days, a is degrees per days, b is degrees
@@ -344,6 +389,12 @@ class PrognosticManager():
             self.esv_schedule.loc[engine2assign.uid, 'TP_EST'] = new_time
             self.esv_schedule.loc[engine2assign.uid, 'TP_MAX'] = new_time + dt.timedelta(days=25)
             self.esv_schedule.loc[engine2assign.uid, 'T_END'] = new_time + dt.timedelta(days=25)
+
+            # visualize_opportunity_windows(opp_windows, mro_windows, [scope_beg, scope_end], self.esv_schedule,
+            #                               engine2assign.uid, chosen_window)
+
+            if self.check_esv_plan_overlaps(self.esv_schedule) is False:
+                return
 
 
 

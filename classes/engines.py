@@ -130,8 +130,8 @@ class Engines:
 
         #efc_rate = 3 if self.fc_counter > 1000 else 8
         efc_rate = 5 if self.fc_counter > 800 else 12
-        efc_rate_with_noise = efc_rate + 0 * np.random.uniform(-1, 1)
-        #efc_rate_with_noise = efc_rate + 20 * np.random.uniform(-1, 1)
+        #efc_rate_with_noise = efc_rate + 0 * np.random.uniform(-1, 1)
+        efc_rate_with_noise = efc_rate + 20 * np.random.uniform(-1, 1)
         return efc_rate_with_noise / 1000
 
     def maintenance_due(self, asmng):
